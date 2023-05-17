@@ -1,69 +1,76 @@
 <template>
-  <main class="flex flex-col p-3 pb-0 text-gray-800 w-260px justify-center items-center">
-    <div class="cursor-pointer flex justify-center items-center" @click="openOption">
-      <img src="../assets/icon.svg" w-22px />
-      <p ml-6px text-12px>极简插件管理</p>
+  <main class="flex flex-col w-280px justify-center items-center dark:bg-dark dark:text-light">
+    <div class="cursor-pointer flex mt-2 justify-center items-center" @click="openOption">
+      <img src="../assets/icon.svg" w-22px>
+      <p ml-6px text-12px>
+        极简插件管理
+      </p>
     </div>
 
-    <div class="bg-gray-500 h-1px mt-3 w-full" />
+    <div class="bg-gray-500 h-1px mt-2 w-full" />
 
-    <div class="max-h-500px overflow-auto">
-      <div v-for="ext in exts" :key="ext.id" class="flex my-2 justify-around">
-        <img :src="getIcon(ext.icons)" class="rounded-md h-22px w-22px on-hover" />
-        <span>{{ ext.name }}</span>
+    <div class="w-full max-h-458px px-4 overflow-auto">
+      <div v-for="ext in exts" :key="ext.id" class="flex my-10px justify-between items-center">
+        <div class="flex items-center on-hover">
+          <img :src="getIcon(ext.icons)" class="h-18px w-18px" @dblclick="uninstallExt(ext)">
+          <span class="cursor-pointer mx-10px w-150px truncate hover:text-#4b9cfb" @click="openExtOption(ext)">{{ ext.name }}</span>
+        </div>
         <label class="plane-switch">
-          <input type="checkbox" :checked="ext.enabled" @change="setEnable(ext)" />
+          <input :checked="ext.enabled" type="checkbox" @change="setEnable(ext)">
           <div>
             <div>
               <svg viewBox="0 0 13 13">
-                <path
-                  d="M1.55989957,5.41666667 L5.51582215,5.41666667 L4.47015462,0.108333333 L4.47015462,0.108333333 C4.47015462,0.0634601974 4.49708054,0.0249592654 4.5354546,0.00851337035 L4.57707145,0 L5.36229752,0 C5.43359776,0 5.50087375,0.028779451 5.55026392,0.0782711996 L5.59317877,0.134368264 L7.13659662,2.81558333 L8.29565964,2.81666667 C8.53185377,2.81666667 8.72332694,3.01067661 8.72332694,3.25 C8.72332694,3.48932339 8.53185377,3.68333333 8.29565964,3.68333333 L7.63589819,3.68225 L8.63450135,5.41666667 L11.9308317,5.41666667 C12.5213171,5.41666667 13,5.90169152 13,6.5 C13,7.09830848 12.5213171,7.58333333 11.9308317,7.58333333 L8.63450135,7.58333333 L7.63589819,9.31666667 L8.29565964,9.31666667 C8.53185377,9.31666667 8.72332694,9.51067661 8.72332694,9.75 C8.72332694,9.98932339 8.53185377,10.1833333 8.29565964,10.1833333 L7.13659662,10.1833333 L5.59317877,12.8656317 C5.55725264,12.9280353 5.49882018,12.9724157 5.43174295,12.9907056 L5.36229752,13 L4.57707145,13 L4.55610333,12.9978962 C4.51267695,12.9890959 4.48069792,12.9547924 4.47230803,12.9134397 L4.47223088,12.8704208 L5.51582215,7.58333333 L1.55989957,7.58333333 L0.891288881,8.55114605 C0.853775374,8.60544678 0.798421006,8.64327676 0.73629202,8.65879796 L0.672314689,8.66666667 L0.106844414,8.66666667 L0.0715243949,8.66058466 L0.0715243949,8.66058466 C0.0297243066,8.6457608 0.00275502199,8.60729104 0,8.5651586 L0.00593007386,8.52254537 L0.580855011,6.85813984 C0.64492547,6.67265611 0.6577034,6.47392717 0.619193545,6.28316421 L0.580694768,6.14191703 L0.00601851064,4.48064746 C0.00203480725,4.4691314 0,4.45701613 0,4.44481314 C0,4.39994001 0.0269259152,4.36143908 0.0652999725,4.34499318 L0.106916826,4.33647981 L0.672546853,4.33647981 C0.737865848,4.33647981 0.80011301,4.36066329 0.848265401,4.40322477 L0.89131128,4.45169723 L1.55989957,5.41666667 Z"
-                  fill="currentColor"
-                ></path>
+                <path d="M1.55989957,5.41666667 L5.51582215,5.41666667 L4.47015462,0.108333333 L4.47015462,0.108333333 C4.47015462,0.0634601974 4.49708054,0.0249592654 4.5354546,0.00851337035 L4.57707145,0 L5.36229752,0 C5.43359776,0 5.50087375,0.028779451 5.55026392,0.0782711996 L5.59317877,0.134368264 L7.13659662,2.81558333 L8.29565964,2.81666667 C8.53185377,2.81666667 8.72332694,3.01067661 8.72332694,3.25 C8.72332694,3.48932339 8.53185377,3.68333333 8.29565964,3.68333333 L7.63589819,3.68225 L8.63450135,5.41666667 L11.9308317,5.41666667 C12.5213171,5.41666667 13,5.90169152 13,6.5 C13,7.09830848 12.5213171,7.58333333 11.9308317,7.58333333 L8.63450135,7.58333333 L7.63589819,9.31666667 L8.29565964,9.31666667 C8.53185377,9.31666667 8.72332694,9.51067661 8.72332694,9.75 C8.72332694,9.98932339 8.53185377,10.1833333 8.29565964,10.1833333 L7.13659662,10.1833333 L5.59317877,12.8656317 C5.55725264,12.9280353 5.49882018,12.9724157 5.43174295,12.9907056 L5.36229752,13 L4.57707145,13 L4.55610333,12.9978962 C4.51267695,12.9890959 4.48069792,12.9547924 4.47230803,12.9134397 L4.47223088,12.8704208 L5.51582215,7.58333333 L1.55989957,7.58333333 L0.891288881,8.55114605 C0.853775374,8.60544678 0.798421006,8.64327676 0.73629202,8.65879796 L0.672314689,8.66666667 L0.106844414,8.66666667 L0.0715243949,8.66058466 L0.0715243949,8.66058466 C0.0297243066,8.6457608 0.00275502199,8.60729104 0,8.5651586 L0.00593007386,8.52254537 L0.580855011,6.85813984 C0.64492547,6.67265611 0.6577034,6.47392717 0.619193545,6.28316421 L0.580694768,6.14191703 L0.00601851064,4.48064746 C0.00203480725,4.4691314 0,4.45701613 0,4.44481314 C0,4.39994001 0.0269259152,4.36143908 0.0652999725,4.34499318 L0.106916826,4.33647981 L0.672546853,4.33647981 C0.737865848,4.33647981 0.80011301,4.36066329 0.848265401,4.40322477 L0.89131128,4.45169723 L1.55989957,5.41666667 Z" fill="currentColor" />
               </svg>
             </div>
-            <span class="street-middle"></span>
-            <span class="cloud"></span>
-            <span class="cloud two"></span>
+            <span class="street-middle" />
+            <span class="cloud" />
+            <span class="cloud two" />
           </div>
         </label>
-        <button @click="openExtOption(ext)">打开option</button>
       </div>
     </div>
 
-    <div class="bg-gray-500 h-1px mt-3 w-full" />
-    <button @click="openAddons">打开扩展</button>
+    <div class="bg-gray-500 h-1px w-full" />
+    <button class="w-full p-2 hover:text-#4b9cfb" @click="openAddons">
+      打开扩展
+    </button>
 
-    <div class="bg-gray-500 h-1px mt-3 w-full" />
-    <button @click="openExtStore">插件市场</button>
+    <div class="bg-gray-500 h-1px w-full" />
+    <button class="w-full p-2 hover:text-#4b9cfb" @click="openExtStore">
+      插件市场
+    </button>
   </main>
 </template>
 
 <script setup lang="ts">
-import { Management } from 'webextension-polyfill'
+import type { Management } from 'webextension-polyfill'
 
-// browser.tabs.create({ url: 'edge://extensions/' });
+function openOption() {
+  browser.runtime.openOptionsPage()
+}
 
 const exts = ref<Management.ExtensionInfo[]>([])
-
-browser.management.getAll().then((res) => {
-  // 循环获取icon
-  res.forEach(async (item) => {
-    item = await browser.management.get(item.id)
-    console.log('🚀 ~ file: Popup.vue:46 ~ item:', item)
+getAllExt()
+function getAllExt() {
+  browser.management.getAll().then((res) => {
+    // 循环获取icon
+    res.forEach(async (item) => {
+      item = await browser.management.get(item.id)
+    })
+    exts.value = res
   })
-  exts.value = res
-})
+}
 
 // 获取分辨率最大的icon
 function getIcon(icons?: Management.IconInfo[]) {
   if (!icons || icons.length === 0)
-    return 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+    return '/assets/ext-icon.png'
 
   let max = 0
   let maxIndex = 0
   icons.forEach((item, index) => {
-    if (item.size > max) {
+    if (item.size > max && item.size <= 128) {
       max = item.size
       maxIndex = index
     }
@@ -74,13 +81,23 @@ function getIcon(icons?: Management.IconInfo[]) {
 // 设置插件的激活状态
 function setEnable(ext: Management.ExtensionInfo) {
   browser.management.setEnabled(ext.id, !ext.enabled)
-  ext.enabled = !ext.enabled
+  // 重新获取插件列表
+  getAllExt()
 }
 
 // 打开插件的option页面
 function openExtOption(ext: Management.ExtensionInfo) {
-  console.log('🚀 ~ file: Popup.vue:75 ~ ext:', ext.optionsUrl)
-  browser.tabs.create({ url: ext.optionsUrl })
+  if (ext.optionsUrl !== '')
+    browser.tabs.create({ url: ext.optionsUrl })
+}
+
+// 卸载插件
+function uninstallExt(ext: Management.ExtensionInfo) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-expect-error
+  browser.management.uninstall(ext.id)
+  // 重新获取插件列表
+  getAllExt()
 }
 
 // 打开扩展页面
@@ -89,19 +106,24 @@ function openAddons() {
   if (/Edg\//.test(navigator.userAgent)) {
     // 当前浏览器是Edge
     browser.tabs.create({ url: 'edge://extensions/' })
-  } else if (/Chrome\//.test(navigator.userAgent)) {
+  }
+  else if (/Chrome\//.test(navigator.userAgent)) {
     // 当前浏览器是Chrome
     browser.tabs.create({ url: 'chrome://extensions/' })
-  } else if (/Firefox\//.test(navigator.userAgent)) {
+  }
+  else if (/Firefox\//.test(navigator.userAgent)) {
     // 当前浏览器是Firefox
     browser.tabs.create({ url: 'about:addons' })
-  } else if (/OPR\//.test(navigator.userAgent)) {
+  }
+  else if (/OPR\//.test(navigator.userAgent)) {
     // 当前浏览器是Opera
     browser.tabs.create({ url: 'opera://extensions/' })
-  } else if (/Safari\//.test(navigator.userAgent)) {
+  }
+  else if (/Safari\//.test(navigator.userAgent)) {
     // 当前浏览器是Safari
     browser.tabs.create({ url: 'safari://extensions/' })
-  } else {
+  }
+  else {
     // 当前浏览器是其他浏览器
     browser.tabs.create({ url: 'about:addons' })
   }
@@ -115,46 +137,40 @@ function openExtStore() {
     browser.tabs.create({
       url: 'https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home/',
     })
-  } else if (/Chrome\//.test(navigator.userAgent)) {
+  }
+  else if (/Chrome\//.test(navigator.userAgent)) {
     // 当前浏览器是Chrome
     browser.tabs.create({ url: 'https://chrome.google.com/webstore/category/extensions' })
-  } else if (/Firefox\//.test(navigator.userAgent)) {
+  }
+  else if (/Firefox\//.test(navigator.userAgent)) {
     // 当前浏览器是Firefox
     browser.tabs.create({ url: 'https://addons.mozilla.org/zh-CN/firefox/' })
-  } else if (/OPR\//.test(navigator.userAgent)) {
+  }
+  else if (/OPR\//.test(navigator.userAgent)) {
     // 当前浏览器是Opera
     browser.tabs.create({ url: 'https://addons.opera.com/zh-cn/extensions/' })
-  } else if (/Safari\//.test(navigator.userAgent)) {
+  }
+  else if (/Safari\//.test(navigator.userAgent)) {
     // 当前浏览器是Safari
     browser.tabs.create({ url: 'https://safari-extensions.apple.com/' })
-  } else {
+  }
+  else {
     // 当前浏览器是其他浏览器
     browser.tabs.create({ url: 'https://chrome.google.com/webstore/category/extensions' })
   }
 }
-function openOption() {
-  browser.runtime.openOptionsPage()
-}
 </script>
 
 <style>
-.on-hover {
-  transition: all 0.05s;
-}
-.on-hover:hover {
-  box-shadow: 0 0 20px 0 rgb(44 71 146 / 40%);
-  transform: scale(1.05);
-}
-
 .plane-switch {
   --dot: #fff;
-  --street: #6b6d76;
-  --street-line: #a8aab4;
-  --street-line-mid: #c0c2c8;
-  --sky-1: #60a7fa;
-  --sky-2: #2f8efc;
+  --street: #6B6D76;
+  --street-line: #A8AAB4;
+  --street-line-mid: #C0C2C8;
+  --sky-1: #60A7FA;
+  --sky-2: #2F8EFC;
   --light-1: rgba(255, 233, 0, 1);
-  --light-2: rgba(255, 233, 0, 0.3);
+  --light-2: rgba(255, 233, 0, .3);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -164,29 +180,20 @@ function openOption() {
 }
 
 .plane-switch input + div {
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
   position: relative;
   overflow: hidden;
-  width: 50px;
-  height: 25px;
+  width: 37px;
+  height: 17px;
   padding: 1px;
   border-radius: 13px;
-  background: linear-gradient(
-      90deg,
-      var(--street) 0%,
-      var(--street) 25%,
-      var(--sky-1) 75%,
-      var(--sky-2) 100%
-    )
-    left var(--p, 0%) top 0;
+  background: linear-gradient(90deg, var(--street) 0%, var(--street) 25%, var(--sky-1) 75%, var(--sky-2) 100%) left var(--p, 0%) top 0;
   background-position-x: var(--p, 0%);
   background-size: 400% auto;
   transition: background-position 0.6s;
 }
 
-.plane-switch input + div:before,
-.plane-switch input + div:after {
-  content: '';
+.plane-switch input + div:before, .plane-switch input + div:after {
+  content: "";
   display: block;
   position: absolute;
   transform: translateX(var(--s, 0));
@@ -210,8 +217,7 @@ function openOption() {
   top: 1px;
   -webkit-animation: lights2 2s linear infinite;
   animation: lights2 2s linear infinite;
-  box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2),
-    8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
+  box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
 }
 
 .plane-switch input + div span {
@@ -226,9 +232,7 @@ function openOption() {
   height: 1px;
   transform: translateX(var(--s, 0));
   background: var(--street-line-mid);
-  box-shadow: 5px 0 0 var(--street-line-mid), 10px 0 0 var(--street-line-mid),
-    15px 0 0 var(--street-line-mid), 20px 0 0 var(--street-line-mid),
-    25px 0 0 var(--street-line-mid);
+  box-shadow: 5px 0 0 var(--street-line-mid), 10px 0 0 var(--street-line-mid), 15px 0 0 var(--street-line-mid), 20px 0 0 var(--street-line-mid), 25px 0 0 var(--street-line-mid);
   transition: transform 0.3s;
 }
 
@@ -238,7 +242,7 @@ function openOption() {
   border-radius: 2px;
   background: #fff;
   position: absolute;
-  top: var(--ct, 8px);
+  top: var(--ct, 6px);
   left: 100%;
   opacity: var(--co, 0);
   transition: opacity 0.3s;
@@ -246,9 +250,8 @@ function openOption() {
   animation: clouds2 2s linear infinite var(--cd, 0s);
 }
 
-.plane-switch input + div span.cloud:before,
-.plane-switch input + div span.cloud:after {
-  content: '';
+.plane-switch input + div span.cloud:before, .plane-switch input + div span.cloud:after {
+  content: "";
   position: absolute;
   transform: translateX(var(--cx, 0));
   border-radius: 50%;
@@ -265,7 +268,7 @@ function openOption() {
 }
 
 .plane-switch input + div span.cloud.two {
-  --ct: 20px;
+  --ct: 16px;
   --cd: 1s;
   opacity: var(--co-2, 0);
 }
@@ -274,7 +277,7 @@ function openOption() {
   display: table;
   position: relative;
   z-index: 1;
-  padding: 5px;
+  padding: 2px;
   border-radius: 50%;
   background: var(--dot);
   transform: translateX(var(--x, 0));
@@ -282,8 +285,8 @@ function openOption() {
 }
 
 .plane-switch input + div div svg {
-  width: 13px;
-  height: 13px;
+  width: 11px;
+  height: 11px;
   display: block;
   color: var(--c, var(--street));
   transition: color 0.6s;
@@ -291,30 +294,24 @@ function openOption() {
 
 .plane-switch input:checked + div {
   --p: 100%;
-  --x: 25px;
+  --x: 20px;
   --s: -50px;
   --c: var(--sky-2);
-  --co: 0.8;
-  --co-2: 0.6;
+  --co: .8;
+  --co-2: .6;
 }
 
 @keyframes lights2 {
-  20%,
-  30% {
-    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-1),
-      8px 21px 0 var(--light-1), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
+  20%, 30% {
+    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-1), 8px 21px 0 var(--light-1), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
   }
 
-  55%,
-  65% {
-    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-2),
-      8px 21px 0 var(--light-2), 16px 0 0 var(--light-1), 16px 21px 0 var(--light-1);
+  55%, 65% {
+    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-1), 16px 21px 0 var(--light-1);
   }
 
-  90%,
-  100% {
-    box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2),
-      8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
+  90%, 100% {
+    box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
   }
 }
 
@@ -324,8 +321,7 @@ function openOption() {
     visibility: visible;
   }
 
-  98%,
-  100% {
+  98%, 100% {
     visibility: hidden;
   }
 
