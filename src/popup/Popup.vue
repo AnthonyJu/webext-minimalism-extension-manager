@@ -9,18 +9,30 @@
 
     <div class="bg-gray-500 h-1px mt-2 w-full" />
 
-    <div class="w-full max-h-458px px-4 overflow-auto">
-      <div v-for="ext in exts" :key="ext.id" class="flex my-10px justify-between items-center">
-        <div class="flex items-center on-hover">
-          <img :src="getIcon(ext.icons)" class="h-18px w-18px" @dblclick="uninstallExt(ext)">
-          <span class="cursor-pointer mx-10px w-150px truncate hover:text-#4b9cfb" @click="openExtOption(ext)">{{ ext.name }}</span>
+    <div id="exts" class="w-full max-h-458px overflow-auto">
+      <div v-for="ext in exts" :key="ext.id" class="flex m-10px justify-between items-center">
+        <div class="flex flex-1 items-center on-hover">
+          <img
+            :src="getIcon(ext.icons)"
+            class="cursor-pointer h-18px w-18px drag-point"
+            @dblclick="uninstallExt(ext)"
+          >
+          <div
+            class="cursor-pointer flex-1 mx-10px w-150px truncate hover:text-#4b9cfb"
+            @click="openExtOption(ext)"
+          >
+            {{ ext.name }}
+          </div>
         </div>
         <label class="plane-switch">
           <input :checked="ext.enabled" type="checkbox" @change="setEnable(ext)">
           <div>
             <div>
               <svg viewBox="0 0 13 13">
-                <path d="M1.55989957,5.41666667 L5.51582215,5.41666667 L4.47015462,0.108333333 L4.47015462,0.108333333 C4.47015462,0.0634601974 4.49708054,0.0249592654 4.5354546,0.00851337035 L4.57707145,0 L5.36229752,0 C5.43359776,0 5.50087375,0.028779451 5.55026392,0.0782711996 L5.59317877,0.134368264 L7.13659662,2.81558333 L8.29565964,2.81666667 C8.53185377,2.81666667 8.72332694,3.01067661 8.72332694,3.25 C8.72332694,3.48932339 8.53185377,3.68333333 8.29565964,3.68333333 L7.63589819,3.68225 L8.63450135,5.41666667 L11.9308317,5.41666667 C12.5213171,5.41666667 13,5.90169152 13,6.5 C13,7.09830848 12.5213171,7.58333333 11.9308317,7.58333333 L8.63450135,7.58333333 L7.63589819,9.31666667 L8.29565964,9.31666667 C8.53185377,9.31666667 8.72332694,9.51067661 8.72332694,9.75 C8.72332694,9.98932339 8.53185377,10.1833333 8.29565964,10.1833333 L7.13659662,10.1833333 L5.59317877,12.8656317 C5.55725264,12.9280353 5.49882018,12.9724157 5.43174295,12.9907056 L5.36229752,13 L4.57707145,13 L4.55610333,12.9978962 C4.51267695,12.9890959 4.48069792,12.9547924 4.47230803,12.9134397 L4.47223088,12.8704208 L5.51582215,7.58333333 L1.55989957,7.58333333 L0.891288881,8.55114605 C0.853775374,8.60544678 0.798421006,8.64327676 0.73629202,8.65879796 L0.672314689,8.66666667 L0.106844414,8.66666667 L0.0715243949,8.66058466 L0.0715243949,8.66058466 C0.0297243066,8.6457608 0.00275502199,8.60729104 0,8.5651586 L0.00593007386,8.52254537 L0.580855011,6.85813984 C0.64492547,6.67265611 0.6577034,6.47392717 0.619193545,6.28316421 L0.580694768,6.14191703 L0.00601851064,4.48064746 C0.00203480725,4.4691314 0,4.45701613 0,4.44481314 C0,4.39994001 0.0269259152,4.36143908 0.0652999725,4.34499318 L0.106916826,4.33647981 L0.672546853,4.33647981 C0.737865848,4.33647981 0.80011301,4.36066329 0.848265401,4.40322477 L0.89131128,4.45169723 L1.55989957,5.41666667 Z" fill="currentColor" />
+                <path
+                  d="M1.55989957,5.41666667 L5.51582215,5.41666667 L4.47015462,0.108333333 L4.47015462,0.108333333 C4.47015462,0.0634601974 4.49708054,0.0249592654 4.5354546,0.00851337035 L4.57707145,0 L5.36229752,0 C5.43359776,0 5.50087375,0.028779451 5.55026392,0.0782711996 L5.59317877,0.134368264 L7.13659662,2.81558333 L8.29565964,2.81666667 C8.53185377,2.81666667 8.72332694,3.01067661 8.72332694,3.25 C8.72332694,3.48932339 8.53185377,3.68333333 8.29565964,3.68333333 L7.63589819,3.68225 L8.63450135,5.41666667 L11.9308317,5.41666667 C12.5213171,5.41666667 13,5.90169152 13,6.5 C13,7.09830848 12.5213171,7.58333333 11.9308317,7.58333333 L8.63450135,7.58333333 L7.63589819,9.31666667 L8.29565964,9.31666667 C8.53185377,9.31666667 8.72332694,9.51067661 8.72332694,9.75 C8.72332694,9.98932339 8.53185377,10.1833333 8.29565964,10.1833333 L7.13659662,10.1833333 L5.59317877,12.8656317 C5.55725264,12.9280353 5.49882018,12.9724157 5.43174295,12.9907056 L5.36229752,13 L4.57707145,13 L4.55610333,12.9978962 C4.51267695,12.9890959 4.48069792,12.9547924 4.47230803,12.9134397 L4.47223088,12.8704208 L5.51582215,7.58333333 L1.55989957,7.58333333 L0.891288881,8.55114605 C0.853775374,8.60544678 0.798421006,8.64327676 0.73629202,8.65879796 L0.672314689,8.66666667 L0.106844414,8.66666667 L0.0715243949,8.66058466 L0.0715243949,8.66058466 C0.0297243066,8.6457608 0.00275502199,8.60729104 0,8.5651586 L0.00593007386,8.52254537 L0.580855011,6.85813984 C0.64492547,6.67265611 0.6577034,6.47392717 0.619193545,6.28316421 L0.580694768,6.14191703 L0.00601851064,4.48064746 C0.00203480725,4.4691314 0,4.45701613 0,4.44481314 C0,4.39994001 0.0269259152,4.36143908 0.0652999725,4.34499318 L0.106916826,4.33647981 L0.672546853,4.33647981 C0.737865848,4.33647981 0.80011301,4.36066329 0.848265401,4.40322477 L0.89131128,4.45169723 L1.55989957,5.41666667 Z"
+                  fill="currentColor"
+                />
               </svg>
             </div>
             <span class="street-middle" />
@@ -45,22 +57,82 @@
 
 <script setup lang="ts">
 import type { Management } from 'webextension-polyfill'
+import Sortable from 'sortablejs'
+import { useStorageLocal } from '../composables/useStorageLocal'
+import { extTheme } from '../logic/dark'
+import { extOrder } from '../logic/order'
 
+// 切换主题
+watchEffect(() => {
+  document.body.className = extTheme.value
+})
+
+// 打开扩展option
 function openOption() {
   browser.runtime.openOptionsPage()
 }
 
-const exts = ref<Management.ExtensionInfo[]>([])
-getAllExt()
+// 存储所有扩展
+const exts = useStorageLocal<Management.ExtensionInfo[]>('exts', [])
+
+// 获取所有扩展
 function getAllExt() {
   browser.management.getAll().then((res) => {
-    // 循环获取icon
+    // 循环获取ext信息
     res.forEach(async (item) => {
       item = await browser.management.get(item.id)
     })
-    exts.value = res
+
+    // 根据排序方式排序
+    // 激活优先
+    if (extOrder.value === '0' || extOrder.value === '2') {
+      // 先获取激活的扩展，再获取未激活的扩展，再进行排序，再进行合并
+      const activeExts = res.filter(ext => ext.enabled)
+      const inactiveExts = res.filter(ext => !ext.enabled)
+      activeExts.sort((a, b) => {
+        return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
+      })
+      inactiveExts.sort((a, b) => {
+        return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
+      })
+      exts.value = activeExts.concat(inactiveExts)
+    }
+
+    // 默认排序
+    else {
+      // 根据插件名称排序,中文放在后面,不区分大小写
+      exts.value = res.sort((a, b) => {
+        return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
+      })
+    }
   })
 }
+
+let sortable: Sortable | null = null
+
+watchEffect(() => {
+  if (extOrder.value === '2')
+    sortable?.option('disabled', false)
+  else
+    sortable?.option('disabled', true)
+
+  // 重新获取插件列表
+  getAllExt()
+})
+
+onMounted(() => {
+  sortable = Sortable.create(document.getElementById('exts')!, {
+    animation: 150,
+    disabled: extOrder.value !== '2',
+    handle: '.drag-point',
+    onEnd: (evt) => {
+      const { oldIndex, newIndex } = evt
+      const ext = exts.value[oldIndex!]
+      exts.value.splice(oldIndex!, 1)
+      exts.value.splice(newIndex!, 0, ext)
+    },
+  })
+})
 
 // 获取分辨率最大的icon
 function getIcon(icons?: Management.IconInfo[]) {
@@ -102,60 +174,60 @@ function uninstallExt(ext: Management.ExtensionInfo) {
 
 // 打开扩展页面
 function openAddons() {
-  // 根据不同浏览器打开不同的页面
-  if (/Edg\//.test(navigator.userAgent)) {
-    // 当前浏览器是Edge
+  // 当前浏览器是Edge
+  if (/Edg\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'edge://extensions/' })
-  }
-  else if (/Chrome\//.test(navigator.userAgent)) {
-    // 当前浏览器是Chrome
+
+  // 当前浏览器是Chrome
+  else if (/Chrome\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'chrome://extensions/' })
-  }
-  else if (/Firefox\//.test(navigator.userAgent)) {
-    // 当前浏览器是Firefox
+
+  // 当前浏览器是Firefox
+  else if (/Firefox\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'about:addons' })
-  }
-  else if (/OPR\//.test(navigator.userAgent)) {
-    // 当前浏览器是Opera
+
+  // 当前浏览器是Opera
+  else if (/OPR\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'opera://extensions/' })
-  }
-  else if (/Safari\//.test(navigator.userAgent)) {
-    // 当前浏览器是Safari
+
+  // 当前浏览器是Safari
+  else if (/Safari\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'safari://extensions/' })
-  }
-  else {
-    // 当前浏览器是其他浏览器
-    browser.tabs.create({ url: 'about:addons' })
-  }
+
+  // 当前浏览器是其他浏览器
+  else browser.tabs.create({ url: 'about:addons' })
 }
 
 // 打开插件市场
 function openExtStore() {
-  // 根据不同浏览器打开不同的页面
+  // 当前浏览器是Edge
   if (/Edg\//.test(navigator.userAgent)) {
-    // 当前浏览器是Edge
     browser.tabs.create({
       url: 'https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home/',
     })
   }
+
+  // 当前浏览器是Chrome
   else if (/Chrome\//.test(navigator.userAgent)) {
-    // 当前浏览器是Chrome
     browser.tabs.create({ url: 'https://chrome.google.com/webstore/category/extensions' })
   }
+
+  // 当前浏览器是Firefox
   else if (/Firefox\//.test(navigator.userAgent)) {
-    // 当前浏览器是Firefox
     browser.tabs.create({ url: 'https://addons.mozilla.org/zh-CN/firefox/' })
   }
+  // 当前浏览器是Opera
   else if (/OPR\//.test(navigator.userAgent)) {
-    // 当前浏览器是Opera
     browser.tabs.create({ url: 'https://addons.opera.com/zh-cn/extensions/' })
   }
+
+  // 当前浏览器是Safari
   else if (/Safari\//.test(navigator.userAgent)) {
-    // 当前浏览器是Safari
     browser.tabs.create({ url: 'https://safari-extensions.apple.com/' })
   }
+
+  // 当前浏览器是其他浏览器
   else {
-    // 当前浏览器是其他浏览器
     browser.tabs.create({ url: 'https://chrome.google.com/webstore/category/extensions' })
   }
 }
@@ -164,13 +236,13 @@ function openExtStore() {
 <style>
 .plane-switch {
   --dot: #fff;
-  --street: #6B6D76;
-  --street-line: #A8AAB4;
-  --street-line-mid: #C0C2C8;
-  --sky-1: #60A7FA;
-  --sky-2: #2F8EFC;
+  --street: #6b6d76;
+  --street-line: #a8aab4;
+  --street-line-mid: #c0c2c8;
+  --sky-1: #60a7fa;
+  --sky-2: #2f8efc;
   --light-1: rgba(255, 233, 0, 1);
-  --light-2: rgba(255, 233, 0, .3);
+  --light-2: rgba(255, 233, 0, 0.3);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
@@ -186,14 +258,22 @@ function openExtStore() {
   height: 17px;
   padding: 1px;
   border-radius: 13px;
-  background: linear-gradient(90deg, var(--street) 0%, var(--street) 25%, var(--sky-1) 75%, var(--sky-2) 100%) left var(--p, 0%) top 0;
+  background: linear-gradient(
+      90deg,
+      var(--street) 0%,
+      var(--street) 25%,
+      var(--sky-1) 75%,
+      var(--sky-2) 100%
+    )
+    left var(--p, 0%) top 0;
   background-position-x: var(--p, 0%);
   background-size: 400% auto;
   transition: background-position 0.6s;
 }
 
-.plane-switch input + div:before, .plane-switch input + div:after {
-  content: "";
+.plane-switch input + div:before,
+.plane-switch input + div:after {
+  content: '';
   display: block;
   position: absolute;
   transform: translateX(var(--s, 0));
@@ -217,7 +297,8 @@ function openExtStore() {
   top: 1px;
   -webkit-animation: lights2 2s linear infinite;
   animation: lights2 2s linear infinite;
-  box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
+  box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2),
+    8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
 }
 
 .plane-switch input + div span {
@@ -232,7 +313,9 @@ function openExtStore() {
   height: 1px;
   transform: translateX(var(--s, 0));
   background: var(--street-line-mid);
-  box-shadow: 5px 0 0 var(--street-line-mid), 10px 0 0 var(--street-line-mid), 15px 0 0 var(--street-line-mid), 20px 0 0 var(--street-line-mid), 25px 0 0 var(--street-line-mid);
+  box-shadow: 5px 0 0 var(--street-line-mid), 10px 0 0 var(--street-line-mid),
+    15px 0 0 var(--street-line-mid), 20px 0 0 var(--street-line-mid),
+    25px 0 0 var(--street-line-mid);
   transition: transform 0.3s;
 }
 
@@ -250,8 +333,9 @@ function openExtStore() {
   animation: clouds2 2s linear infinite var(--cd, 0s);
 }
 
-.plane-switch input + div span.cloud:before, .plane-switch input + div span.cloud:after {
-  content: "";
+.plane-switch input + div span.cloud:before,
+.plane-switch input + div span.cloud:after {
+  content: '';
   position: absolute;
   transform: translateX(var(--cx, 0));
   border-radius: 50%;
@@ -268,7 +352,7 @@ function openExtStore() {
 }
 
 .plane-switch input + div span.cloud.two {
-  --ct: 16px;
+  --ct: 14px;
   --cd: 1s;
   opacity: var(--co-2, 0);
 }
@@ -297,21 +381,27 @@ function openExtStore() {
   --x: 20px;
   --s: -50px;
   --c: var(--sky-2);
-  --co: .8;
-  --co-2: .6;
+  --co: 0.8;
+  --co-2: 0.6;
 }
 
 @keyframes lights2 {
-  20%, 30% {
-    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-1), 8px 21px 0 var(--light-1), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
+  20%,
+  30% {
+    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-1),
+      8px 21px 0 var(--light-1), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
   }
 
-  55%, 65% {
-    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-1), 16px 21px 0 var(--light-1);
+  55%,
+  65% {
+    box-shadow: inset 0 0 0 2px var(--light-2), 0 21px 0 var(--light-2), 8px 0 0 var(--light-2),
+      8px 21px 0 var(--light-2), 16px 0 0 var(--light-1), 16px 21px 0 var(--light-1);
   }
 
-  90%, 100% {
-    box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2), 8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
+  90%,
+  100% {
+    box-shadow: inset 0 0 0 2px var(--light-1), 0 21px 0 var(--light-1), 8px 0 0 var(--light-2),
+      8px 21px 0 var(--light-2), 16px 0 0 var(--light-2), 16px 21px 0 var(--light-2);
   }
 }
 
@@ -321,7 +411,8 @@ function openExtStore() {
     visibility: visible;
   }
 
-  98%, 100% {
+  98%,
+  100% {
     visibility: hidden;
   }
 
