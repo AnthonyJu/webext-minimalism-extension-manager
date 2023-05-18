@@ -40,7 +40,7 @@
     </div>
     <div class="flex mt-8">
       <a
-        href="https://github.com/AnthonyJu/webext-simple-extension-manager "
+        href="https://github.com/AnthonyJu/webext-minimalism-extension-manager "
         target="_blank"
         class="flex text-16px items-center color-#409eff"
       >
