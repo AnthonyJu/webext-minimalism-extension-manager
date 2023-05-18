@@ -1,10 +1,10 @@
 {
-  "name": "color-picker",
-  "displayName": "Color Picker",
+  "name": "simple-extension-manager",
+  "displayName": "Extension Manager（极简）",
   "version": "0.0.2",
   "private": true,
   "packageManager": "pnpm@7.8.0",
-  "description": "不仅仅是在页面, 你可以在任何地方进行取色, Not only the page, you can color anywhere.",
+  "description": "只提供简单的管理方式,不搞花里胡哨,Provide only simple management methods, not flashy.",
   "scripts": {
     "dev": "npm run clear && cross-env NODE_ENV=development run-p dev:*",
     "dev:prepare": "esno scripts/prepare.ts",

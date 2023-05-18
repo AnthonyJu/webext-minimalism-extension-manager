@@ -1,6 +1,9 @@
 <template>
   <main class="flex flex-col text-center py-10 px-4 justify-center items-center">
-    <img src="../assets/icon.svg" class="mb-3px w-30px" alt="extension icon">
+    <div class="flex justify-center items-center">
+      <img src="../assets/icon.svg" class="w-24px" alt="extension icon">
+      <span class="ml-6px text-16px dark:text-light">Extension Manager（极简）</span>
+    </div>
 
     <div class="mt-5 toggle-box">
       <div class="toggleWrapper">
@@ -68,8 +71,7 @@ html.dark {
   transform: scale(0.75);
 }
 .toggle-box .toggleWrapper input {
-  position: absolute;
-  left: -99em;
+  display: none;
 }
 
 .toggle-box .toggle {
@@ -97,7 +99,7 @@ html.dark {
   right: -50px;
   top: 15px;
   font-size: 18px;
-  color: #749ed7;
+  color: #83d8ff;
 }
 
 .toggle-box .toggle__handler {
@@ -262,10 +264,14 @@ html.dark {
   transition: all 300ms 400ms cubic-bezier(0.445, 0.05, 0.55, 0.95);
 }
 
+.dark .tabs{
+  background-color: #749dd6;
+}
+
 .tabs {
   display: flex;
   position: relative;
-  background-color: #fff;
+  background-color: #83d8ff;
   box-shadow: 0 0 1px 0 rgba(24, 94, 224, 0.15), 0 6px 12px 0 rgba(24, 94, 224, 0.15);
   padding: 0.75rem;
   border-radius: 99px;
@@ -286,7 +292,7 @@ html.dark {
   height: 30px;
   width: 90px;
   font-size: .8rem;
-  color: black;
+  color: #fff;
   font-weight: 500;
   border-radius: 99px;
   cursor: pointer;
@@ -311,7 +317,7 @@ html.dark {
 }
 
 .container input[type="radio"]:checked + label {
-  color: #185ee0;
+  color: #28a6ff;
 }
 
 .container input[type="radio"]:checked + label > .notification {

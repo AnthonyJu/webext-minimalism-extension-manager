@@ -3,7 +3,7 @@
     <div class="cursor-pointer flex mt-2 justify-center items-center" @click="openOption">
       <img src="../assets/icon.svg" w-22px>
       <p ml-6px text-12px>
-        极简插件管理
+        Extension Manager（极简）
       </p>
     </div>
 
