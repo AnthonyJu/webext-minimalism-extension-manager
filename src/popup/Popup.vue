@@ -59,12 +59,12 @@
 import type { Management } from 'webextension-polyfill'
 import Sortable from 'sortablejs'
 import { useStorageLocal } from '../composables/useStorageLocal'
-import { extTheme } from '../logic/dark'
+import { themeIsDark } from '../logic/dark'
 import { extOrder } from '../logic/order'
 
 // 切换主题
 watchEffect(() => {
-  document.documentElement.className = extTheme.value
+  document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
 })
 
 // 存储所有扩展

@@ -7,7 +7,7 @@
 
     <div class="mt-5 toggle-box">
       <div class="toggleWrapper">
-        <input id="dn" type="checkbox" class="dn" :checked="isDark" @change="isDark = !isDark">
+        <input id="dn" type="checkbox" class="dn" :checked="themeIsDark" @change="themeIsDark = !themeIsDark">
         <label for="dn" class="toggle">
           <span class="toggle__handler">
             <span class="crater crater--1" />
@@ -53,13 +53,10 @@
 
 <script setup lang="ts">
 import { extOrder } from '../logic/order'
-import { extTheme } from '../logic/dark'
-
-const isDark = ref(false)
+import { themeIsDark } from '../logic/dark'
 
 watchEffect(() => {
-  extTheme.value = isDark.value ? 'dark' : 'light'
-  document.documentElement.classList.add(extTheme.value)
+  document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
 })
 </script>
 
