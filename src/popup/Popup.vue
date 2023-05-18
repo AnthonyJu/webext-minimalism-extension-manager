@@ -45,7 +45,7 @@
 
     <div class="bg-gray-500 h-1px w-full" />
     <button class="w-full p-2 hover:text-#4b9cfb" @click="openAddons">
-      打开扩展
+      扩展管理
     </button>
 
     <div class="bg-gray-500 h-1px w-full" />
@@ -64,7 +64,7 @@ import { extOrder } from '../logic/order'
 
 // 切换主题
 watchEffect(() => {
-  document.body.className = extTheme.value
+  document.documentElement.className = extTheme.value
 })
 
 // 打开扩展option
@@ -234,6 +234,10 @@ function openExtStore() {
 </script>
 
 <style>
+html.dark {
+    color-scheme: dark;
+}
+
 .plane-switch {
   --dot: #fff;
   --street: #6b6d76;
