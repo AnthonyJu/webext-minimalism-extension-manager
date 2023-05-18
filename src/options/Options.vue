@@ -25,7 +25,7 @@
     </div>
 
     <div class="mt-6 mb-2 text-14px dark:text-light">
-      插件排序方式
+      扩展排序方式
     </div>
     <div class="container">
       <div class="tabs">
