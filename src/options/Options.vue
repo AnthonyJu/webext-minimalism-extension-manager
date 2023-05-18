@@ -52,13 +52,14 @@
 </template>
 
 <script setup lang="ts">
-import { useDark } from '@vueuse/core'
 import { extOrder } from '../logic/order'
 import { extTheme } from '../logic/dark'
 
-const isDark = useDark()
+const isDark = ref(false)
+
 watchEffect(() => {
   extTheme.value = isDark.value ? 'dark' : 'light'
+  document.documentElement.classList.add(extTheme.value)
 })
 </script>
 
