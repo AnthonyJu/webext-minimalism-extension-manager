@@ -10,7 +10,7 @@
     <div class="bg-gray-500 h-1px mt-2 w-full" />
 
     <div id="exts" class="w-full max-h-458px overflow-auto">
-      <div v-for="ext in exts" :key="ext.id" class="flex m-10px justify-between items-center">
+      <div v-for="ext in allExts" :key="ext.id" class="flex m-10px justify-between items-center">
         <div class="flex flex-1 items-center on-hover">
           <img
             :src="getIcon(ext.icons)"
@@ -67,13 +67,14 @@ watchEffect(() => {
   document.documentElement.className = extTheme.value
 })
 
-// 打开扩展option
-function openOption() {
-  browser.runtime.openOptionsPage()
-}
-
 // 存储所有扩展
 const exts = useStorageLocal<Management.ExtensionInfo[]>('exts', [])
+
+const allExts = ref<Management.ExtensionInfo[]>([])
+watchEffect(() => {
+  if (extOrder.value === '2')
+    exts.value = allExts.value
+})
 
 // 获取所有扩展
 function getAllExt() {
@@ -89,19 +90,33 @@ function getAllExt() {
       // 先获取激活的扩展，再获取未激活的扩展，再进行排序，再进行合并
       const activeExts = res.filter(ext => ext.enabled)
       const inactiveExts = res.filter(ext => !ext.enabled)
+
       activeExts.sort((a, b) => {
         return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
       })
       inactiveExts.sort((a, b) => {
         return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
       })
-      exts.value = activeExts.concat(inactiveExts)
+
+      if (extOrder.value === '0') {
+        allExts.value = activeExts.concat(inactiveExts)
+      }
+      else {
+        if (exts.value.length === 0) { exts.value = activeExts.concat(inactiveExts) }
+        else {
+          // 根据存储的顺序，替换对应数据
+          exts.value.forEach((item) => {
+            item = res.find(ext => ext.id === item.id)!
+          })
+        }
+        allExts.value = exts.value
+      }
     }
 
     // 默认排序
     else {
       // 根据插件名称排序,中文放在后面,不区分大小写
-      exts.value = res.sort((a, b) => {
+      allExts.value = res.sort((a, b) => {
         return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
       })
     }
@@ -111,13 +126,14 @@ function getAllExt() {
 let sortable: Sortable | null = null
 
 watchEffect(() => {
+  // 获取所有扩展
+  getAllExt()
+
+  // 根据排序方式设置是否可拖拽
   if (extOrder.value === '2')
     sortable?.option('disabled', false)
   else
     sortable?.option('disabled', true)
-
-  // 重新获取插件列表
-  getAllExt()
 })
 
 onMounted(() => {
@@ -133,6 +149,11 @@ onMounted(() => {
     },
   })
 })
+
+// 打开扩展option
+function openOption() {
+  browser.runtime.openOptionsPage()
+}
 
 // 获取分辨率最大的icon
 function getIcon(icons?: Management.IconInfo[]) {
