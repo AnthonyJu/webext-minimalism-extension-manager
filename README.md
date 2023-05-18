@@ -22,7 +22,7 @@
 
 ## 使用
 
-如果你正在使用Edge浏览器，你可以在 [Edge Add-ons]下载它。
+如果你正在使用Edge浏览器，你可以在 [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/pfiggkflfkhohkmegglgnlgakdbmjdfh)下载它。
 
 如果你使用的是其他浏览器，你可以clone这个仓库，运行：
     
