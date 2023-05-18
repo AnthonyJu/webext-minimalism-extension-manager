@@ -317,7 +317,7 @@ html.dark {
 }
 
 .container input[type="radio"]:checked + label {
-  color: #28a6ff;
+  color: #00acff;
 }
 
 .container input[type="radio"]:checked + label > .notification {
@@ -343,7 +343,7 @@ html.dark {
   display: flex;
   height: 30px;
   width: 90px;
-  background-color: #e6eef9;
+  background-color: #fff;
   z-index: 1;
   border-radius: 99px;
   transition: 0.25s ease-out;

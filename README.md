@@ -16,9 +16,8 @@
         提供两种主题：浅色、深色（个人喜欢深色，so...）
 
 <p align="center">
-<img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/color-picker/popup.png"><br/>
-<img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/color-picker/picking.png"><br/>
-<img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/color-picker/picked.png"><br/>
+<img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/minimalism-extension-manager/light.png"><br/>
+<img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/minimalism-extension-manager/dark.png"><br/>
 </p>
 
 ## 使用

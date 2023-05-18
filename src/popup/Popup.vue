@@ -234,8 +234,12 @@ function openExtStore() {
 </script>
 
 <style>
+*{
+  user-select: none;
+}
+
 html.dark {
-    color-scheme: dark;
+  color-scheme: dark;
 }
 
 .plane-switch {
