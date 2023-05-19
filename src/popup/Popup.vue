@@ -102,14 +102,11 @@ function getAllExt() {
         allExts.value = activeExts.concat(inactiveExts)
       }
       else {
-        if (exts.value.length === 0) { exts.value = activeExts.concat(inactiveExts) }
+        if (exts.value.length === 0) { allExts.value = activeExts.concat(inactiveExts) }
         else {
           // 根据存储的顺序，替换对应数据
-          exts.value.forEach((item) => {
-            item = res.find(ext => ext.id === item.id)!
-          })
+          allExts.value = exts.value.map(item => res.find(ext => ext.id === item.id)!)
         }
-        allExts.value = exts.value
       }
     }
 
