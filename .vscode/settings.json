@@ -1,7 +1,5 @@
 {
-  "cSpell.words": [
-    "Vitesse"
-  ],
+  "cSpell.words": ["Vitesse"],
   "typescript.tsdk": "node_modules/typescript/lib",
   "vite.autoStart": false,
   "editor.codeActionsOnSave": {
@@ -9,6 +7,5 @@
   },
   "files.associations": {
     "*.css": "postcss"
-  },
-  "commentTranslate.source": "intellsmi.comment-translate-ali.cloud"
+  }
 }

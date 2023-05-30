@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import { extOrder, themeIsDark } from '~/logic/storage'
+
+watchEffect(() => {
+  document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
+})
+</script>
+
 <template>
   <main class="flex flex-col text-center py-10 px-4 justify-center items-center">
     <div class="flex justify-center items-center">
@@ -27,7 +35,7 @@
     <div class="mt-6 mb-2 text-14px dark:text-light">
       扩展排序方式
     </div>
-    <div class="container">
+    <div class="tabs-container">
       <div class="tabs">
         <input id="radio-1" v-model="extOrder" type="radio" name="tabs" value="0">
         <label class="tab" for="radio-1">激活优先</label>
@@ -50,15 +58,6 @@
     </div>
   </main>
 </template>
-
-<script setup lang="ts">
-import { extOrder } from '../logic/order'
-import { themeIsDark } from '../logic/dark'
-
-watchEffect(() => {
-  document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
-})
-</script>
 
 <style>
 html.dark {
@@ -267,6 +266,7 @@ html.dark {
 }
 
 .tabs {
+  width: fit-content;
   display: flex;
   position: relative;
   background-color: #83d8ff;
@@ -279,7 +279,7 @@ html.dark {
   z-index: 2;
 }
 
-.container input[type="radio"] {
+.tabs-container input[type="radio"] {
   display: none;
 }
 
@@ -314,25 +314,25 @@ html.dark {
   transition: 0.15s ease-in;
 }
 
-.container input[type="radio"]:checked + label {
+.tabs-container input[type="radio"]:checked + label {
   color: #00acff;
 }
 
-.container input[type="radio"]:checked + label > .notification {
+.tabs-container input[type="radio"]:checked + label > .notification {
   background-color: #185ee0;
   color: #fff;
   margin: 0px;
 }
 
-.container input[id="radio-1"]:checked ~ .glider {
+.tabs-container input[id="radio-1"]:checked ~ .glider {
   transform: translateX(0);
 }
 
-.container input[id="radio-2"]:checked ~ .glider {
+.tabs-container input[id="radio-2"]:checked ~ .glider {
   transform: translateX(100%);
 }
 
-.container input[id="radio-3"]:checked ~ .glider {
+.tabs-container input[id="radio-3"]:checked ~ .glider {
   transform: translateX(200%);
 }
 

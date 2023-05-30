@@ -1,3 +1,4 @@
 import { useStorageLocal } from '~/composables/useStorageLocal'
 
-export const storageDemo = useStorageLocal('webext-demo', 'Storage Demo', { listenToStorageChanges: true })
+export const extOrder = useStorageLocal('ext-order', '1', { listenToStorageChanges: true })
+export const themeIsDark = useStorageLocal('ext-theme', false, { listenToStorageChanges: true })

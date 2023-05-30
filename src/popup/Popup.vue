@@ -58,9 +58,8 @@
 <script setup lang="ts">
 import type { Management } from 'webextension-polyfill'
 import Sortable from 'sortablejs'
-import { useStorageLocal } from '../composables/useStorageLocal'
-import { themeIsDark } from '../logic/dark'
-import { extOrder } from '../logic/order'
+import { useStorageLocal } from '~/composables/useStorageLocal'
+import { extOrder, themeIsDark } from '~/logic/storage'
 
 // 切换主题
 watchEffect(() => {
@@ -102,7 +101,9 @@ function getAllExt() {
         allExts.value = activeExts.concat(inactiveExts)
       }
       else {
-        if (exts.value.length === 0) { allExts.value = activeExts.concat(inactiveExts) }
+        if (exts.value.length === 0) {
+          allExts.value = activeExts.concat(inactiveExts)
+        }
         else {
           // 根据存储的顺序，替换对应数据
           allExts.value = exts.value.map(item => res.find(ext => ext.id === item.id)!)
