@@ -1,7 +1,7 @@
 {
   "name": "minimalism-extension-manager",
   "displayName": "Extension Manager（极简）",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "packageManager": "pnpm@8.5.1",
   "description": "只提供简单的管理方式,不搞花里胡哨,Provide only simple management methods, not flashy.",
