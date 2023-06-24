@@ -10,7 +10,7 @@
     <div class="bg-gray-500 h-1px mt-2 w-full" />
 
     <div id="exts" class="w-full max-h-458px overflow-auto">
-      <div v-for="ext in allExts" :key="ext.id" class="flex m-10px justify-between items-center">
+      <div v-for="ext in extsList" :key="ext.id" class="flex m-10px justify-between items-center">
         <div class="flex flex-1 items-center on-hover">
           <img
             :src="getIcon(ext.icons)"
@@ -25,7 +25,7 @@
           </div>
         </div>
         <label class="plane-switch">
-          <input :checked="ext.enabled" type="checkbox" @change="setEnable(ext)">
+          <input v-model="ext.enabled" type="checkbox" @click="setEnable(ext)">
           <div>
             <div>
               <svg viewBox="0 0 13 13">
@@ -58,34 +58,76 @@
 <script setup lang="ts">
 import type { Management } from 'webextension-polyfill'
 import Sortable from 'sortablejs'
-import { useStorageLocal } from '~/composables/useStorageLocal'
-import { extOrder, themeIsDark } from '~/logic/storage'
+import { storage } from 'webextension-polyfill'
+import { extOrder, orderExtList, themeIsDark } from '~/logic/storage'
 
 // 切换主题
 watchEffect(() => {
   document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
 })
 
-// 存储所有扩展
-const exts = useStorageLocal<Management.ExtensionInfo[]>('exts', [])
+let sortable: Sortable | null = null
+// 展示的扩展
+const extsList = ref<Management.ExtensionInfo[]>([])
 
-const allExts = ref<Management.ExtensionInfo[]>([])
-watchEffect(() => {
-  if (extOrder.value === '2')
-    exts.value = allExts.value
+onMounted(() => {
+  sortable = Sortable.create(document.getElementById('exts')!, {
+    animation: 150,
+    disabled: extOrder.value !== '2',
+    handle: '.drag-point',
+    onEnd: (evt) => {
+      const { oldIndex, newIndex } = evt
+      const ext = orderExtList.value[oldIndex!]
+      orderExtList.value.splice(oldIndex!, 1)
+      orderExtList.value.splice(newIndex!, 0, ext)
+    },
+  })
+})
+
+// 切换扩展排序方式
+watch(extOrder, (value) => {
+  // 根据排序方式设置是否可拖拽
+  sortable?.option('disabled', value !== '2')
+  // 获取所有扩展
+  getAllExt()
+},
+{
+  immediate: true,
+})
+
+// 当有新的扩展安装时，重新获取扩展列表
+browser.management.onInstalled.addListener(getAllExt)
+
+// 当有扩展被卸载时，重新获取扩展列表
+browser.management.onUninstalled.addListener(getAllExt)
+
+// 当有扩展被启用或禁用时，重新获取扩展列表
+browser.management.onEnabled.addListener(getAllExt)
+
+// 取消监听
+onUnmounted(() => {
+  browser.management.onInstalled.removeListener(getAllExt)
+  browser.management.onUninstalled.removeListener(getAllExt)
+  browser.management.onEnabled.removeListener(getAllExt)
 })
 
 // 获取所有扩展
 function getAllExt() {
-  browser.management.getAll().then((res) => {
+  browser.management.getAll().then(async (res) => {
     // 循环获取ext信息
     res.forEach(async (item) => {
       item = await browser.management.get(item.id)
     })
 
-    // 根据排序方式排序
-    // 激活优先
-    if (extOrder.value === '0' || extOrder.value === '2') {
+    // 默认排序
+    if (extOrder.value === '1') {
+      // 根据插件名称排序,中文放在后面,不区分大小写
+      extsList.value = res.sort((a, b) => {
+        return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
+      })
+    }
+    // 激活优先、手动排序
+    else {
       // 先获取激活的扩展，再获取未激活的扩展，再进行排序，再进行合并
       const activeExts = res.filter(ext => ext.enabled)
       const inactiveExts = res.filter(ext => !ext.enabled)
@@ -97,56 +139,34 @@ function getAllExt() {
         return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
       })
 
+      // 激活优先
       if (extOrder.value === '0') {
-        allExts.value = activeExts.concat(inactiveExts)
+        extsList.value = activeExts.concat(inactiveExts)
+        orderExtList.value = activeExts.concat(inactiveExts)
       }
       else {
-        if (exts.value.length === 0) {
-          allExts.value = activeExts.concat(inactiveExts)
+        // 获取手动排序的扩展, 必须使用await，否则会出现偶发性的排序错误
+        const orderList = (await storage.local.get('orderExtList')).orderExtList
+        // 手动排序为空时
+        if (JSON.parse(orderList).length === 0) {
+          extsList.value = activeExts.concat(inactiveExts)
+          orderExtList.value = activeExts.concat(inactiveExts)
+          return
         }
-        else {
-          // 根据存储的顺序，替换对应数据
-          allExts.value = exts.value.map(item => res.find(ext => ext.id === item.id)!)
-        }
-      }
-    }
 
-    // 默认排序
-    else {
-      // 根据插件名称排序,中文放在后面,不区分大小写
-      allExts.value = res.sort((a, b) => {
-        return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
-      })
+        // 过滤掉已经卸载的扩展
+        orderExtList.value = orderExtList.value.filter(ext => res.some(item => item.id === ext?.id))
+        // 增加新安装的扩展
+        res.forEach((ext) => {
+          if (!orderExtList.value.some(item => item.id === ext.id))
+            orderExtList.value.unshift(ext)
+        })
+        // 根据存储的顺序，替换对应最新数据
+        extsList.value = orderExtList.value.map(item => res.find(ext => ext.id === item.id)!)
+      }
     }
   })
 }
-
-let sortable: Sortable | null = null
-
-watchEffect(() => {
-  // 获取所有扩展
-  getAllExt()
-
-  // 根据排序方式设置是否可拖拽
-  if (extOrder.value === '2')
-    sortable?.option('disabled', false)
-  else
-    sortable?.option('disabled', true)
-})
-
-onMounted(() => {
-  sortable = Sortable.create(document.getElementById('exts')!, {
-    animation: 150,
-    disabled: extOrder.value !== '2',
-    handle: '.drag-point',
-    onEnd: (evt) => {
-      const { oldIndex, newIndex } = evt
-      const ext = exts.value[oldIndex!]
-      exts.value.splice(oldIndex!, 1)
-      exts.value.splice(newIndex!, 0, ext)
-    },
-  })
-})
 
 // 打开扩展option
 function openOption() {
@@ -172,8 +192,10 @@ function getIcon(icons?: Management.IconInfo[]) {
 // 设置插件的激活状态
 function setEnable(ext: Management.ExtensionInfo) {
   browser.management.setEnabled(ext.id, !ext.enabled)
-  // 重新获取插件列表
-  getAllExt()
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.log(err)
+    })
 }
 
 // 打开插件的option页面
@@ -184,11 +206,8 @@ function openExtOption(ext: Management.ExtensionInfo) {
 
 // 卸载插件
 function uninstallExt(ext: Management.ExtensionInfo) {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-expect-error
+  // @ts-expect-error 属性“uninstall”在类型“Static”上不存在
   browser.management.uninstall(ext.id)
-  // 重新获取插件列表
-  getAllExt()
 }
 
 // 打开扩展页面

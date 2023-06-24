@@ -24,7 +24,7 @@ export async function getManifest() {
     background: isFirefox
       ? {
           scripts: ['dist/background/index.mjs'],
-          type: 'module',
+          // type: 'module',
         }
       : {
           service_worker: './dist/background/index.mjs',
@@ -35,26 +35,27 @@ export async function getManifest() {
       128: './assets/icon-512.png',
     },
     permissions: [
+      'tabs',
       'storage',
       'management',
     ],
     host_permissions: ['*://*/*'],
-    content_scripts: [
-      {
-        matches: [
-          '<all_urls>',
-        ],
-        js: [
-          'dist/contentScripts/index.global.js',
-        ],
-      },
-    ],
-    web_accessible_resources: [
-      {
-        resources: ['dist/contentScripts/style.css'],
-        matches: ['<all_urls>'],
-      },
-    ],
+    // content_scripts: [
+    //   {
+    //     matches: [
+    //       '<all_urls>',
+    //     ],
+    //     js: [
+    //       'dist/contentScripts/index.global.js',
+    //     ],
+    //   },
+    // ],
+    // web_accessible_resources: [
+    //   {
+    //     resources: ['dist/contentScripts/style.css'],
+    //     matches: ['<all_urls>'],
+    //   },
+    // ],
     content_security_policy: {
       extension_pages: isDev
         // this is required on dev for Vite script to load

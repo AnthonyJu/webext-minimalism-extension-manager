@@ -1,19 +1,11 @@
-<script setup lang="ts">
-import { extOrder, themeIsDark } from '~/logic/storage'
-
-watchEffect(() => {
-  document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
-})
-</script>
-
 <template>
   <main class="flex flex-col text-center py-10 px-4 justify-center items-center">
     <div class="flex justify-center items-center">
       <img src="../assets/icon.svg" class="w-24px" alt="extension icon">
-      <span class="ml-6px text-16px dark:text-light">Extension Manager（极简）</span>
+      <span class="ml-6px text-18px dark:text-light">Extension Manager（极简）</span>
     </div>
 
-    <div class="mt-5 toggle-box">
+    <div class="mt-10 toggle-box">
       <div class="toggleWrapper">
         <input id="dn" type="checkbox" class="dn" :checked="themeIsDark" @change="themeIsDark = !themeIsDark">
         <label for="dn" class="toggle">
@@ -32,7 +24,7 @@ watchEffect(() => {
       </div>
     </div>
 
-    <div class="mt-6 mb-2 text-14px dark:text-light">
+    <div class="mt-10 mb-4 text-16px dark:text-light">
       扩展排序方式
     </div>
     <div class="tabs-container">
@@ -46,6 +38,10 @@ watchEffect(() => {
         <span class="glider" />
       </div>
     </div>
+
+    <!-- 规则匹配 -->
+    <Rule />
+
     <div class="flex mt-8">
       <a
         href="https://github.com/AnthonyJu/webext-minimalism-extension-manager "
@@ -59,7 +55,15 @@ watchEffect(() => {
   </main>
 </template>
 
-<style>
+<script setup lang="ts">
+import { extOrder, themeIsDark } from '~/logic/storage'
+
+watchEffect(() => {
+  document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
+})
+</script>
+
+<style scoped>
 html.dark {
   background-color: #222;
 }
