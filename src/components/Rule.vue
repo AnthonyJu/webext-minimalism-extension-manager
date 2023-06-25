@@ -14,13 +14,13 @@
     </div>
     <!-- table -->
     <ElTable border :data="extRules" max-height="400px">
-      <ElTableColumn type="index" label="序号" width="60" align="center" />
-      <ElTableColumn prop="match" label="规则" width="200" align="center">
+      <ElTableColumn type="index" label="序号" width="55" align="center" />
+      <ElTableColumn prop="match" label="规则" width="220" align="center">
         <template #default="{ row }">
           <div v-html="row.match.replaceAll(',', '<br />')" />
         </template>
       </ElTableColumn>
-      <ElTableColumn prop="extIds" label="扩展" width="200" align="center">
+      <ElTableColumn prop="extIds" label="扩展" width="220" align="center">
         <template #default="{ row }">
           <div
             v-for="ext in getExt(row)"

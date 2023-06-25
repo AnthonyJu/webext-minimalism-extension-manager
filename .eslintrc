@@ -12,6 +12,7 @@
           "style"
         ]
       }
-    ]
+    ],
+    "antfu/if-newline": "off"
   }
 }
