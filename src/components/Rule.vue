@@ -56,6 +56,7 @@
     :title="title"
     width="500px"
     :close-on-click-modal="false"
+    @opened="handleChange"
     @closed="handleCancel"
   >
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="60px" :inline="false">
@@ -65,9 +66,7 @@
           placeholder="请选择扩展"
           clearable
           multiple
-          collapse-tags
-          collapse-tags-tooltip
-          :max-collapse-tags="3"
+          @change="handleChange"
         >
           <ElOption v-for="ext in extList" :key="ext.id" :label="ext.name" :value="ext.id">
             <div class="flex items-center">
@@ -204,6 +203,28 @@ function getExt(row: Form) {
   })
 }
 
+// 扩展变更时匹配扩展图标
+function handleChange() {
+  nextTick(() => {
+    const tags = document.querySelectorAll('.el-tag__content')
+    tags.forEach((item: any) => {
+      if (item.getAttribute('data-hasIcon') === null) {
+        item.setAttribute('data-hasIcon', '')
+        const extName = item.firstElementChild.innerText
+        const ext = extList.value.find(item => item.name === extName)
+        if (ext) {
+          item.style.display = 'flex'
+          item.style.maxWidth = '120px'
+          item.innerHTML = `
+            <img src="${getIcon(ext.icons)}" class="h-14px w-14px relative -left-4px">
+            <div class="truncate">${extName}</div>
+          `
+        }
+      }
+    })
+  })
+}
+
 // 获取分辨率最大的icon
 function getIcon(icons?: Management.IconInfo[]) {
   if (!icons || icons.length === 0)
@@ -230,5 +251,8 @@ function getIcon(icons?: Management.IconInfo[]) {
   .el-button--primary:hover {
     background-color: var(--el-button-hover-bg-color) !important;
   }
+}
+.el-select-tags-wrapper{
+  text-align: left !important;
 }
 </style>

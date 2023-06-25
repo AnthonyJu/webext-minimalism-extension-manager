@@ -21,24 +21,30 @@ browser.tabs.onRemoved.addListener((tabId) => {
 
 // 根据规则设置扩展的启用状态
 async function setExtEnabled(tab: browser.Tabs.Tab, enabled: boolean) {
-  const extRules = JSON.parse((await storage.local.get('ext-rules'))['ext-rules']) as { id: number; match: string; extIds: string[] }[]
-  extRules.forEach((rule) => {
-    const matchList = rule.match.split(',')
-    const isMatch = matchList.some(match => tab.pendingUrl?.startsWith(match))
-    if (isMatch) {
-      rule.extIds.forEach((extId) => {
-        browser.management.setEnabled(extId, enabled)
-      })
-    }
-  })
+  const rules = (await storage.local.get('ext-rules'))['ext-rules']
+  if (rules) {
+    const extRules = JSON.parse(rules) as { id: number; match: string; extIds: string[] }[]
+    extRules.forEach((rule) => {
+      const matchList = rule.match.split(',')
+      const isMatch = matchList.some(match => tab.pendingUrl?.startsWith(match))
+      if (isMatch) {
+        rule.extIds.forEach((extId) => {
+          browser.management.setEnabled(extId, enabled)
+        })
+      }
+    })
+  }
 }
 
 // 默认关闭所有规则中的扩展
 (async function disableAllExt() {
-  const extRules = JSON.parse((await storage.local.get('ext-rules'))['ext-rules']) as { id: number; match: string; extIds: string[] }[]
-  extRules.forEach((rule) => {
-    rule.extIds.forEach((extId) => {
-      browser.management.setEnabled(extId, false)
+  const rules = (await storage.local.get('ext-rules'))['ext-rules']
+  if (rules) {
+    const extRules = JSON.parse(rules) as { id: number; match: string; extIds: string[] }[]
+    extRules.forEach((rule) => {
+      rule.extIds.forEach((extId) => {
+        browser.management.setEnabled(extId, false)
+      })
     })
-  })
+  }
 })()
