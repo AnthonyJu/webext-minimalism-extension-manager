@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col text-center py-10 px-4 justify-center items-center">
+  <main class="min-w-650px flex flex-col text-center py-10 px-4 justify-center items-center">
     <div class="flex justify-center items-center">
       <img src="../assets/icon.svg" class="w-24px" alt="extension icon">
       <span class="ml-6px text-18px dark:text-light">Extension Manager（极简）</span>
@@ -29,18 +29,23 @@
     </div>
     <div class="tabs-container">
       <div class="tabs">
-        <input id="radio-1" v-model="extOrder" type="radio" name="tabs" value="0">
-        <label class="tab" for="radio-1">激活优先</label>
         <input id="radio-2" v-model="extOrder" type="radio" name="tabs" value="1">
         <label class="tab" for="radio-2">默认排序</label>
+        <input id="radio-1" v-model="extOrder" type="radio" name="tabs" value="0">
+        <label class="tab" for="radio-1">激活优先</label>
         <input id="radio-3" v-model="extOrder" type="radio" name="tabs" value="2">
         <label class="tab" for="radio-3">手动排序</label>
+        <input id="radio-4" v-model="extOrder" type="radio" name="tabs" value="3">
+        <label class="tab" for="radio-4">分组排序</label>
         <span class="glider" />
       </div>
     </div>
 
     <!-- 规则匹配 -->
     <Rule />
+
+    <!-- 分组配置 -->
+    <Group v-if="extOrder === '3'" />
 
     <div class="flex mt-8">
       <a
@@ -56,6 +61,8 @@
 </template>
 
 <script setup lang="ts">
+import 'element-plus/dist/index.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import { extOrder, themeIsDark } from '~/logic/storage'
 
 watchEffect(() => {
@@ -328,16 +335,20 @@ html.dark {
   margin: 0px;
 }
 
-.tabs-container input[id="radio-1"]:checked ~ .glider {
+.tabs-container input[id="radio-2"]:checked ~ .glider {
   transform: translateX(0);
 }
 
-.tabs-container input[id="radio-2"]:checked ~ .glider {
+.tabs-container input[id="radio-1"]:checked ~ .glider {
   transform: translateX(100%);
 }
 
 .tabs-container input[id="radio-3"]:checked ~ .glider {
   transform: translateX(200%);
+}
+
+.tabs-container input[id="radio-4"]:checked ~ .glider {
+  transform: translateX(300%);
 }
 
 .glider {

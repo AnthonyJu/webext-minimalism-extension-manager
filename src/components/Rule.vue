@@ -107,8 +107,6 @@ import {
   ElTable,
   ElTableColumn,
 } from 'element-plus'
-import 'element-plus/dist/index.css'
-import 'element-plus/theme-chalk/dark/css-vars.css'
 import type { Management } from 'webextension-polyfill'
 import { extRules } from '~/logic/storage'
 
@@ -149,18 +147,22 @@ function handleAdd() {
 }
 
 function handleOk() {
-  const extRule = JSON.parse(JSON.stringify(form.value))
-  if (title.value === '新增规则') {
-    extRules.value.push({
-      ...extRule,
-      id: Date.now(),
-    })
-  }
-  else {
-    const index = extRules.value.findIndex(item => item.id === extRule.id)
-    extRules.value.splice(index, 1, extRule)
-  }
-  visible.value = false
+  formRef.value.validate((valid: boolean) => {
+    if (valid) {
+      const extRule = JSON.parse(JSON.stringify(form.value))
+      if (title.value === '新增规则') {
+        extRules.value.push({
+          ...extRule,
+          id: Date.now(),
+        })
+      }
+      else {
+        const index = extRules.value.findIndex(item => item.id === extRule.id)
+        extRules.value.splice(index, 1, extRule)
+      }
+      visible.value = false
+    }
+  })
 }
 
 function handleCancel() {

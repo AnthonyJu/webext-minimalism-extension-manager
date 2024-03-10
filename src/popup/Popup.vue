@@ -10,37 +10,15 @@
     <div class="bg-gray-500 h-1px mt-2 w-full" />
 
     <div id="exts" class="w-full max-h-458px overflow-auto">
-      <div v-for="ext in extsList" :key="ext.id" class="flex m-10px justify-between items-center">
-        <div class="flex flex-1 items-center on-hover">
-          <img
-            :src="getIcon(ext.icons)"
-            class="cursor-pointer h-18px w-18px drag-point"
-            @dblclick="uninstallExt(ext)"
-          >
-          <div
-            class="cursor-pointer flex-1 mx-10px w-150px truncate hover:text-#4b9cfb"
-            @click="openExtOption(ext)"
-          >
-            {{ ext.name }}
-          </div>
+      <template v-if="extOrder === '3'">
+        <div v-for="group in extGroups" :key="group.id">
+          {{ group.name }}
+          <Ext v-for="ext in group.exts" :key="ext.id" :ext-info="ext" />
         </div>
-        <label class="plane-switch">
-          <input v-model="ext.enabled" type="checkbox" @click="setEnable(ext)">
-          <div>
-            <div>
-              <svg viewBox="0 0 13 13">
-                <path
-                  d="M1.55989957,5.41666667 L5.51582215,5.41666667 L4.47015462,0.108333333 L4.47015462,0.108333333 C4.47015462,0.0634601974 4.49708054,0.0249592654 4.5354546,0.00851337035 L4.57707145,0 L5.36229752,0 C5.43359776,0 5.50087375,0.028779451 5.55026392,0.0782711996 L5.59317877,0.134368264 L7.13659662,2.81558333 L8.29565964,2.81666667 C8.53185377,2.81666667 8.72332694,3.01067661 8.72332694,3.25 C8.72332694,3.48932339 8.53185377,3.68333333 8.29565964,3.68333333 L7.63589819,3.68225 L8.63450135,5.41666667 L11.9308317,5.41666667 C12.5213171,5.41666667 13,5.90169152 13,6.5 C13,7.09830848 12.5213171,7.58333333 11.9308317,7.58333333 L8.63450135,7.58333333 L7.63589819,9.31666667 L8.29565964,9.31666667 C8.53185377,9.31666667 8.72332694,9.51067661 8.72332694,9.75 C8.72332694,9.98932339 8.53185377,10.1833333 8.29565964,10.1833333 L7.13659662,10.1833333 L5.59317877,12.8656317 C5.55725264,12.9280353 5.49882018,12.9724157 5.43174295,12.9907056 L5.36229752,13 L4.57707145,13 L4.55610333,12.9978962 C4.51267695,12.9890959 4.48069792,12.9547924 4.47230803,12.9134397 L4.47223088,12.8704208 L5.51582215,7.58333333 L1.55989957,7.58333333 L0.891288881,8.55114605 C0.853775374,8.60544678 0.798421006,8.64327676 0.73629202,8.65879796 L0.672314689,8.66666667 L0.106844414,8.66666667 L0.0715243949,8.66058466 L0.0715243949,8.66058466 C0.0297243066,8.6457608 0.00275502199,8.60729104 0,8.5651586 L0.00593007386,8.52254537 L0.580855011,6.85813984 C0.64492547,6.67265611 0.6577034,6.47392717 0.619193545,6.28316421 L0.580694768,6.14191703 L0.00601851064,4.48064746 C0.00203480725,4.4691314 0,4.45701613 0,4.44481314 C0,4.39994001 0.0269259152,4.36143908 0.0652999725,4.34499318 L0.106916826,4.33647981 L0.672546853,4.33647981 C0.737865848,4.33647981 0.80011301,4.36066329 0.848265401,4.40322477 L0.89131128,4.45169723 L1.55989957,5.41666667 Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-            <span class="street-middle" />
-            <span class="cloud" />
-            <span class="cloud two" />
-          </div>
-        </label>
-      </div>
+      </template>
+      <template v-else>
+        <Ext v-for="ext in extsList" :key="ext.id" :ext-info="ext" />
+      </template>
     </div>
 
     <div class="bg-gray-500 h-1px w-full" />
@@ -56,11 +34,15 @@
 </template>
 
 <script setup lang="ts">
+// import { ElScrollbar } from 'element-plus'
 import type { Management } from 'webextension-polyfill'
 import Sortable from 'sortablejs'
 import { storage } from 'webextension-polyfill'
-import { extOrder, orderExtList, themeIsDark } from '~/logic/storage'
+import { extGroups, extOrder, getIcon, orderExtList, setDefaultGroup, themeIsDark } from '~/logic/storage'
 
+interface Ext extends Management.ExtensionInfo {
+  _icon: string
+}
 // 切换主题
 watchEffect(() => {
   document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
@@ -68,10 +50,12 @@ watchEffect(() => {
 
 let sortable: Sortable | null = null
 // 展示的扩展
-const extsList = ref<Management.ExtensionInfo[]>([])
+const extsList = ref<Ext[]>([])
 
 onMounted(() => {
-  sortable = Sortable.create(document.getElementById('exts')!, {
+  const element = document.getElementById('exts')
+  if (!element) return
+  sortable = Sortable.create(element, {
     animation: 150,
     disabled: extOrder.value !== '2',
     handle: '.drag-point',
@@ -119,18 +103,25 @@ function getAllExt() {
       item = await browser.management.get(item.id)
     })
 
+    const newRes: Ext[] = res.map((item) => {
+      return {
+        ...item,
+        _icon: getIcon(item.icons),
+      }
+    })
+
     // 默认排序
     if (extOrder.value === '1') {
       // 根据插件名称排序,中文放在后面,不区分大小写
-      extsList.value = res.sort((a, b) => {
+      extsList.value = newRes.sort((a, b) => {
         return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
       })
     }
     // 激活优先、手动排序
     else {
       // 先获取激活的扩展，再获取未激活的扩展，再进行排序，再进行合并
-      const activeExts = res.filter(ext => ext.enabled)
-      const inactiveExts = res.filter(ext => !ext.enabled)
+      const activeExts = newRes.filter(ext => ext.enabled)
+      const inactiveExts = newRes.filter(ext => !ext.enabled)
 
       activeExts.sort((a, b) => {
         return a.name.localeCompare(b.name, 'en', { sensitivity: 'accent' })
@@ -155,59 +146,25 @@ function getAllExt() {
         }
 
         // 过滤掉已经卸载的扩展
-        orderExtList.value = orderExtList.value.filter(ext => res.some(item => item.id === ext?.id))
+        orderExtList.value = orderExtList.value.filter(ext => newRes.some(item => item.id === ext?.id))
         // 增加新安装的扩展
-        res.forEach((ext) => {
+        newRes.forEach((ext) => {
           if (!orderExtList.value.some(item => item.id === ext.id))
             orderExtList.value.unshift(ext)
         })
         // 根据存储的顺序，替换对应最新数据
-        extsList.value = orderExtList.value.map(item => res.find(ext => ext.id === item.id)!)
+        extsList.value = orderExtList.value.map(item => newRes.find(ext => ext.id === item.id)!)
       }
     }
+
+    // 如果有新安装的插件，添加到默认分组
+    setDefaultGroup(newRes)
   })
 }
 
 // 打开扩展option
 function openOption() {
   browser.runtime.openOptionsPage()
-}
-
-// 获取分辨率最大的icon
-function getIcon(icons?: Management.IconInfo[]) {
-  if (!icons || icons.length === 0)
-    return '/assets/ext-icon.png'
-
-  let max = 0
-  let maxIndex = 0
-  icons.forEach((item, index) => {
-    if (item.size > max && item.size <= 128) {
-      max = item.size
-      maxIndex = index
-    }
-  })
-  return icons[maxIndex].url
-}
-
-// 设置插件的激活状态
-function setEnable(ext: Management.ExtensionInfo) {
-  browser.management.setEnabled(ext.id, !ext.enabled)
-    .catch((err) => {
-      // eslint-disable-next-line no-console
-      console.log(err)
-    })
-}
-
-// 打开插件的option页面
-function openExtOption(ext: Management.ExtensionInfo) {
-  if (ext.optionsUrl !== '')
-    browser.tabs.create({ url: ext.optionsUrl })
-}
-
-// 卸载插件
-function uninstallExt(ext: Management.ExtensionInfo) {
-  // @ts-expect-error 属性“uninstall”在类型“Static”上不存在
-  browser.management.uninstall(ext.id)
 }
 
 // 打开扩展页面
