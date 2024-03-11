@@ -208,7 +208,7 @@ function openExtStore() {
   }
   // 当前浏览器是Chrome
   else if (/Chrome\//.test(navigator.userAgent)) {
-    browser.tabs.create({ url: 'https://chrome.google.com/webstore/category/extensions' })
+    browser.tabs.create({ url: 'https://chromewebstore.google.com/' })
   }
   // 当前浏览器是Firefox
   else if (/Firefox\//.test(navigator.userAgent)) {
