@@ -26,6 +26,18 @@ export function setDefaultGroup(exts: Ext[]) {
       },
     ]
   }
+  else {
+    // 如果有分组，替换对应的插件
+    extGroups.value.forEach((group) => {
+      group.exts = group.exts.map((item) => {
+        const ext = exts.find(ext => ext.id === item.id)
+        return {
+          ...(ext ?? item),
+          _icon: getIcon(ext?.icons),
+        }
+      })
+    })
+  }
   // 计算所有分组的长度
   const extsNum = extGroups.value.reduce((prev, cur) => {
     return prev + cur.exts.length
