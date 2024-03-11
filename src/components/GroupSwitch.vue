@@ -22,6 +22,7 @@
 const props = defineProps<{
   group: ExtGroup
 }>()
+
 function setGroupExtEnable(e: Event) {
   props.group.exts.forEach((ext) => {
     browser.management.setEnabled(ext.id, (e.target as HTMLInputElement).checked)

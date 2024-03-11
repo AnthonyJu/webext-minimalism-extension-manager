@@ -90,12 +90,14 @@ browser.management.onUninstalled.addListener(getAllExt)
 
 // 当有扩展被启用或禁用时，重新获取扩展列表
 browser.management.onEnabled.addListener(getAllExt)
+browser.management.onDisabled.addListener(getAllExt)
 
 // 取消监听
 onUnmounted(() => {
   browser.management.onInstalled.removeListener(getAllExt)
   browser.management.onUninstalled.removeListener(getAllExt)
   browser.management.onEnabled.removeListener(getAllExt)
+  browser.management.onDisabled.removeListener(getAllExt)
 })
 
 // 获取所有扩展
@@ -204,12 +206,10 @@ function openExtStore() {
       url: 'https://microsoftedge.microsoft.com/addons/Microsoft-Edge-Extensions-Home/',
     })
   }
-
   // 当前浏览器是Chrome
   else if (/Chrome\//.test(navigator.userAgent)) {
     browser.tabs.create({ url: 'https://chrome.google.com/webstore/category/extensions' })
   }
-
   // 当前浏览器是Firefox
   else if (/Firefox\//.test(navigator.userAgent)) {
     browser.tabs.create({ url: 'https://addons.mozilla.org/zh-CN/firefox/' })
@@ -218,12 +218,10 @@ function openExtStore() {
   else if (/OPR\//.test(navigator.userAgent)) {
     browser.tabs.create({ url: 'https://addons.opera.com/zh-cn/extensions/' })
   }
-
   // 当前浏览器是Safari
   else if (/Safari\//.test(navigator.userAgent)) {
     browser.tabs.create({ url: 'https://safari-extensions.apple.com/' })
   }
-
   // 当前浏览器是其他浏览器
   else {
     browser.tabs.create({ url: 'https://chrome.google.com/webstore/category/extensions' })

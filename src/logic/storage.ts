@@ -20,7 +20,7 @@ export function setDefaultGroup(exts: Ext[]) {
     extGroups.value = [
       {
         id: 0,
-        enabled: true,
+        enabled: exts.some(ext => ext.enabled),
         name: '默认分组',
         exts,
       },
@@ -36,6 +36,8 @@ export function setDefaultGroup(exts: Ext[]) {
           _icon: getIcon(ext?.icons),
         }
       })
+      // 如果所有的插件开启状态都是false，则group的开启状态也是false
+      group.enabled = group.exts.some(ext => ext.enabled)
     })
   }
   // 计算所有分组的长度
