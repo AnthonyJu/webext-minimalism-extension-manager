@@ -22,19 +22,36 @@ export function setDefaultGroup(exts: Ext[]) {
       },
     ]
   }
-  const defaultGroup = extGroups.value.find(item => item.id === 0)!
-  // 如果有新安装的插件，添加到默认分组
-  const newExt = exts.filter((item) => {
-    return !defaultGroup.exts.some(ext => ext.id === item.id)
-  })
-  // 找到默认分组
-  if (newExt.length > 0) {
-    defaultGroup.exts.push(...newExt.map((item) => {
-      return {
-        ...item,
-        _icon: getIcon(item.icons),
-      }
-    }))
+  // 计算所有分组的长度
+  const extsNum = extGroups.value.reduce((prev, cur) => {
+    return prev + cur.exts.length
+  }, 0)
+  // 如果分组的长度和插件的长度不一致，说明有新安装或者卸载的插件
+  if (exts.length !== extsNum) {
+    // 找到新安装的插件
+    const newExt = exts.filter((item) => {
+      return !extGroups.value.some(group => group.exts.some(ext => ext.id === item.id))
+    })
+    if (newExt.length > 0) {
+      const defaultGroup = extGroups.value.find(item => item.id === 0)!
+      defaultGroup.exts.push(...newExt.map((item) => {
+        return {
+          ...item,
+          _icon: getIcon(item.icons),
+        }
+      }))
+    }
+    // 找到卸载的插件
+    const removeExt = extGroups.value.reduce((prev, cur) => {
+      return prev.concat(cur.exts)
+    }, [] as Ext[]).filter((item) => {
+      return !exts.some(ext => ext.id === item.id)
+    })
+    if (removeExt.length > 0) {
+      extGroups.value.forEach((group) => {
+        group.exts = group.exts.filter(item => !removeExt.some(ext => ext.id === item.id))
+      })
+    }
   }
 }
 
