@@ -15,6 +15,7 @@
         {{ extInfo.name }}
       </div>
     </div>
+    <!-- <Switch :enabled="extInfo.enabled" @click="setEnable" /> -->
     <label class="plane-switch">
       <!-- eslint-disable-next-line vue/no-mutating-props -->
       <input v-model="extInfo.enabled" type="checkbox" @click="setEnable">

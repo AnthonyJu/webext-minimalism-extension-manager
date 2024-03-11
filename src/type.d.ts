@@ -1,7 +1,5 @@
 import type { Management } from 'webextension-polyfill'
 
-export {}
-
 declare global {
 
   interface ExtRule {
@@ -17,6 +15,9 @@ declare global {
   interface ExtGroup {
     id: number
     name: string
+    enabled: boolean
     exts: Ext[]
   }
 }  
+
+export {}

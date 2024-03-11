@@ -13,10 +13,14 @@ export const extGroups = useStorageLocal<ExtGroup[]>('ext-groups', [], { listenT
 
 // 分组配置
 export function setDefaultGroup(exts: Ext[]) {
+  // 过滤掉自身
+  exts = exts.filter(item => item.name !== 'Extension Manager（极简）')
+  // 如果没有分组，创建默认分组
   if (extGroups.value.length === 0) {
     extGroups.value = [
       {
         id: 0,
+        enabled: true,
         name: '默认分组',
         exts,
       },

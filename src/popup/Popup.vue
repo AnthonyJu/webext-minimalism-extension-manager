@@ -12,7 +12,10 @@
     <div id="exts" class="w-full max-h-458px overflow-auto">
       <template v-if="extOrder === '3'">
         <div v-for="group in extGroups" :key="group.id">
-          {{ group.name }}
+          <div class="m-10px pb-4px flex font-500 items-center justify-between text-14px border-b border-gray">
+            {{ group.name }}
+            <GroupSwitch :group="group" />
+          </div>
           <Ext v-for="ext in group.exts" :key="ext.id" :ext-info="ext" />
         </div>
       </template>

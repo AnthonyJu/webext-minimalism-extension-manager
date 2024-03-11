@@ -152,6 +152,7 @@ function handleOk() {
         extGroups.value.push({
           id: extGroups.value.length,
           name: form.value.name,
+          enabled: true,
           exts: [],
         })
       }
