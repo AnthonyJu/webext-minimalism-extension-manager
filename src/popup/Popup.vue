@@ -9,10 +9,14 @@
 
     <div class="bg-gray-500 h-1px mt-2 w-full" />
 
-    <div id="exts" class="w-full max-h-458px overflow-auto">
+    <div id="exts" class="w-full max-h-458px overflow-auto flex flex-col my-5px gap-10px">
       <template v-if="extOrder === '3'">
-        <div v-for="group in extGroups" :key="group.id">
-          <div class="m-10px pb-4px flex font-500 items-center justify-between text-14px border-b border-gray">
+        <div
+          v-for="group in extGroups"
+          :key="group.id"
+          class="border-gray border mx-5px py-5px rounded"
+        >
+          <div class="mx-10px pb-4px flex items-center justify-between text-14px border-b border-gray">
             {{ group.name }}
             <GroupSwitch :group="group" />
           </div>
@@ -37,15 +41,10 @@
 </template>
 
 <script setup lang="ts">
-// import { ElScrollbar } from 'element-plus'
-import type { Management } from 'webextension-polyfill'
 import Sortable from 'sortablejs'
 import { storage } from 'webextension-polyfill'
 import { extGroups, extOrder, getIcon, orderExtList, setDefaultGroup, themeIsDark } from '~/logic/storage'
 
-interface Ext extends Management.ExtensionInfo {
-  _icon: string
-}
 // 切换主题
 watchEffect(() => {
   document.documentElement.className = themeIsDark.value ? 'dark' : 'light'
@@ -84,10 +83,8 @@ watch(extOrder, (value) => {
 
 // 当有新的扩展安装时，重新获取扩展列表
 browser.management.onInstalled.addListener(getAllExt)
-
 // 当有扩展被卸载时，重新获取扩展列表
 browser.management.onUninstalled.addListener(getAllExt)
-
 // 当有扩展被启用或禁用时，重新获取扩展列表
 browser.management.onEnabled.addListener(getAllExt)
 browser.management.onDisabled.addListener(getAllExt)
@@ -177,23 +174,18 @@ function openAddons() {
   // 当前浏览器是Edge
   if (/Edg\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'edge://extensions/' })
-
   // 当前浏览器是Chrome
   else if (/Chrome\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'chrome://extensions/' })
-
   // 当前浏览器是Firefox
   else if (/Firefox\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'about:addons' })
-
   // 当前浏览器是Opera
   else if (/OPR\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'opera://extensions/' })
-
   // 当前浏览器是Safari
   else if (/Safari\//.test(navigator.userAgent))
     browser.tabs.create({ url: 'safari://extensions/' })
-
   // 当前浏览器是其他浏览器
   else browser.tabs.create({ url: 'about:addons' })
 }

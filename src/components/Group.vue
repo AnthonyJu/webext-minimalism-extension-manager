@@ -14,7 +14,7 @@
   <!-- group -->
   <div ref="dragRef" class="group-container flex flex-wrap justify-center gap-10px">
     <div
-      v-for="(group, index) in extGroups"
+      v-for="(group, index) in allGroups"
       :key="group.id"
       class="group-item w-300px min-h-105px flex flex-col"
     >
@@ -76,6 +76,13 @@ import type { Management } from 'webextension-polyfill'
 import { useDraggable } from 'vue-draggable-plus'
 import { extGroups, setDefaultGroup } from '~/logic/storage'
 
+interface AllGroup {
+  id: number
+  name: string
+  enabled: boolean
+  exts: Ref<Ext[]>
+}
+
 const title = ref('新增分组')
 const visible = ref(false)
 const formRef = ref()
@@ -86,6 +93,8 @@ const form = ref({
 const rules = ref({
   name: [{ required: true, message: '请输入分组名称', trigger: 'change' }],
 })
+
+const allGroups = ref<AllGroup[]>([])
 
 // 获取所有扩展
 browser.management.getAll().then(async (res) => {
@@ -103,13 +112,26 @@ browser.management.getAll().then(async (res) => {
       _icon: getIcon(item.icons),
     }
   }))
+  allGroups.value = JSON.parse(JSON.stringify(extGroups.value)).map((item: any) => {
+    return {
+      ...item,
+      exts: ref(item.exts),
+    }
+  })
+})
+
+watch(allGroups, (val) => {
+  extGroups.value = val
+}, {
+  flush: 'post',
+  deep: true,
 })
 
 const dragRef = ref()
 const dragExtRef = ref()
 // 拖拽
 watch(dragRef, () => {
-  useDraggable(dragRef, extGroups, { animation: 150, handle: '.cursor-move' })
+  useDraggable(dragRef, allGroups, { animation: 150, handle: '.cursor-move' })
 }, {
   flush: 'post',
 })
@@ -117,8 +139,8 @@ watch(dragExtRef, (val) => {
   val.forEach((el: any, index: number) => {
     useDraggable(
       el,
-      // @ts-expect-error extGroups
-      extGroups.value[index].exts,
+      // @ts-expect-error exts
+      allGroups.value[index].exts,
       {
         animation: 150,
         group: 'ext',
@@ -138,10 +160,10 @@ function handleCommad(command: string, group: { id: number;name: string }) {
     visible.value = true
   }
   else {
-    const delExtIds = extGroups.value.find(item => item.id === group.id)?.exts
+    const delExtIds = allGroups.value.find(item => item.id === group.id)?.exts
     if (delExtIds)
-      extGroups.value.find(item => item.id === 0)!.exts.push(...delExtIds)
-    extGroups.value = extGroups.value.filter(item => item.id !== group.id)
+      allGroups.value.find(item => item.id === 0)!.exts.push(...delExtIds)
+    allGroups.value = allGroups.value.filter(item => item.id !== group.id)
   }
 }
 
@@ -149,15 +171,15 @@ function handleOk() {
   formRef.value.validate((valid: boolean) => {
     if (valid) {
       if (title.value === '新增分组') {
-        extGroups.value.push({
-          id: extGroups.value.length,
+        allGroups.value.push({
+          id: allGroups.value.length,
           name: form.value.name,
           enabled: true,
           exts: [],
         })
       }
       else {
-        extGroups.value = extGroups.value.map((item) => {
+        allGroups.value = allGroups.value.map((item) => {
           if (item.id === form.value.id)
             item.name = form.value.name
           return item
@@ -169,6 +191,7 @@ function handleOk() {
 }
 
 function handleCancel() {
+  title.value = '新增分组'
   form.value.id = 0
   form.value.name = ''
   formRef.value.resetFields()

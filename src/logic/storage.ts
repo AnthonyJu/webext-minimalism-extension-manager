@@ -16,6 +16,7 @@ export function setDefaultGroup(exts: Ext[]) {
   // 过滤掉自身
   exts = exts.filter(item => item.name !== 'Extension Manager（极简）')
   // 如果没有分组，创建默认分组
+  // extGroups.value = []
   if (extGroups.value.length === 0) {
     extGroups.value = [
       {
