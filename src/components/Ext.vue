@@ -1,5 +1,5 @@
 <template>
-  <div class="flex mx-10px my-4px justify-between items-center">
+  <div class="flex mx-10px my-5px justify-between items-center">
     <div class="flex flex-1 items-center on-hover">
       <img
         :src="extInfo._icon"

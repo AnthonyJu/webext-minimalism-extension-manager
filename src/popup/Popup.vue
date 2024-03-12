@@ -9,19 +9,22 @@
 
     <div class="bg-gray-500 h-1px mt-2 w-full" />
 
-    <div id="exts" class="w-full max-h-458px overflow-auto flex flex-col my-5px gap-10px">
+    <div id="exts" class="w-full max-h-458px overflow-auto flex flex-col my-6px gap-10px">
       <template v-if="extOrder === '3'">
-        <div
-          v-for="group in extGroups"
-          :key="group.id"
-          class="border-gray border mx-5px py-5px rounded"
-        >
-          <div class="mx-10px pb-4px flex items-center justify-between text-14px border-b border-gray">
-            {{ group.name }}
-            <GroupSwitch :group="group" />
+        <template v-for="group in extGroups" :key="group.id">
+          <div
+            v-if="group.exts.length > 0"
+            class="border-gray border mx-6px py-5px rounded"
+          >
+            <div class="px-10px pb-4px flex items-center justify-between text-14px border-b border-gray">
+              {{ group.name }}
+              <GroupSwitch :group="group" />
+            </div>
+            <div mt-8px>
+              <Ext v-for="ext in group.exts" :key="ext.id" :ext-info="ext" />
+            </div>
           </div>
-          <Ext v-for="ext in group.exts" :key="ext.id" :ext-info="ext" />
-        </div>
+        </template>
       </template>
       <template v-else>
         <Ext v-for="ext in extsList" :key="ext.id" :ext-info="ext" />

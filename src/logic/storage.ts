@@ -21,7 +21,7 @@ export function setDefaultGroup(exts: Ext[]) {
     extGroups.value = [
       {
         id: 0,
-        enabled: exts.some(ext => ext.enabled),
+        enabled: true,
         name: '默认分组',
         exts,
       },
@@ -41,6 +41,7 @@ export function setDefaultGroup(exts: Ext[]) {
       group.enabled = group.exts.some(ext => ext.enabled)
     })
   }
+  return
   // 计算所有分组的长度
   const extsNum = extGroups.value.reduce((prev, cur) => {
     return prev + cur.exts.length
