@@ -9,12 +9,14 @@
     4. 提供与扩展管理相同快捷按钮：管理扩展、扩展商店。
     5. 提供两种主题，浅色、深色。
     6. 提供规则匹配，根据当前打开网站，自动启用与禁用扩展。
+    7. 支持扩展分组功能，支持一键启用、禁用分组内的所有扩展。
 
 > 扩展层次无法去固定其他扩展在工具栏（这是真的痛），不然就可以完全隐藏原生扩展管理了。
 
 <p align="center">
 <img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/minimalism-extension-manager/light.jpg"><br/>
 <img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/minimalism-extension-manager/dark.jpg"><br/>
+<img width="655" src="https://raw.githubusercontent.com/AnthonyJu/static/main/minimalism-extension-manager/group.png"><br/>
 </p>
 
 ## 使用
