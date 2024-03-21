@@ -9,7 +9,9 @@ export const orderExtList = useStorageLocal<Management.ExtensionInfo[]>('orderEx
 export const extRules = useStorageLocal<ExtRule[]>('ext-rules', [], {
   listenToStorageChanges: true,
 })
-export const extGroups = useStorageLocal<ExtGroup[]>('ext-groups', [], { listenToStorageChanges: true })
+export const extGroups = useStorageLocal<ExtGroup[]>('ext-groups', [], {
+  listenToStorageChanges: true,
+})
 
 // 分组配置
 export function setDefaultGroup(exts: Ext[]) {
@@ -24,6 +26,8 @@ export function setDefaultGroup(exts: Ext[]) {
       {
         id: 0,
         enabled: true,
+        hide: false,
+        expand: true,
         name: '默认分组',
         exts,
       },
@@ -56,19 +60,23 @@ export function setDefaultGroup(exts: Ext[]) {
     })
     if (newExt.length > 0) {
       const defaultGroup = extGroups.value.find(item => item.id === 0)!
-      defaultGroup.exts.push(...newExt.map((item) => {
-        return {
-          ...item,
-          _icon: getIcon(item.icons),
-        }
-      }))
+      defaultGroup.exts.push(
+        ...newExt.map((item) => {
+          return {
+            ...item,
+            _icon: getIcon(item.icons),
+          }
+        }),
+      )
     }
     // 找到卸载的插件
-    const removeExt = extGroups.value.reduce((prev, cur) => {
-      return prev.concat(cur.exts)
-    }, [] as Ext[]).filter((item) => {
-      return !exts.some(ext => ext.id === item.id)
-    })
+    const removeExt = extGroups.value
+      .reduce((prev, cur) => {
+        return prev.concat(cur.exts)
+      }, [] as Ext[])
+      .filter((item) => {
+        return !exts.some(ext => ext.id === item.id)
+      })
     if (removeExt.length > 0) {
       extGroups.value.forEach((group) => {
         group.exts = group.exts.filter(item => !removeExt.some(ext => ext.id === item.id))
@@ -79,8 +87,7 @@ export function setDefaultGroup(exts: Ext[]) {
 
 // 获取分辨率最大的icon
 export function getIcon(icons?: Management.IconInfo[]) {
-  if (!icons || icons.length === 0)
-    return '/assets/ext-icon.png'
+  if (!icons || icons.length === 0) return '/assets/ext-icon.png'
 
   let max = 0
   let maxIndex = 0

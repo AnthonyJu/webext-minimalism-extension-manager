@@ -57,9 +57,17 @@
     @closed="handleCancel"
   >
     <ElForm ref="formRef" :model="form" :rules="rules">
-      <ElFormItem label="分组名称" prop="name" class="!mb-0">
+      <ElFormItem label="分组名称" prop="name">
         <ElInput v-model="form.name" autofocus placeholder="请输入" />
       </ElFormItem>
+      <div class="flex items-center gap-30px">
+        <ElFormItem label="默认展开" required class="!mb-0">
+          <ElSwitch v-model="form.expand" />
+        </ElFormItem>
+        <ElFormItem label="是否隐藏" required class="!mb-0">
+          <ElSwitch v-model="form.hide" />
+        </ElFormItem>
+      </div>
     </ElForm>
     <template #footer>
       <span>
@@ -71,15 +79,12 @@
 </template>
 
 <script setup lang="ts">
-import { ElButton, ElDialog, ElDropdown, ElDropdownItem, ElDropdownMenu, ElForm, ElFormItem, ElInput, ElMessage } from 'element-plus'
+import { ElButton, ElDialog, ElDropdown, ElDropdownItem, ElDropdownMenu, ElForm, ElFormItem, ElInput, ElMessage, ElSwitch } from 'element-plus'
 import type { Management } from 'webextension-polyfill'
 import { useDraggable } from 'vue-draggable-plus'
 import { extGroups, setDefaultGroup } from '~/logic/storage'
 
-interface AllGroup {
-  id: number
-  name: string
-  enabled: boolean
+interface ExtRefGroup extends ExtGroupWithoutExts {
   exts: Ref<Ext[]>
 }
 
@@ -89,12 +94,14 @@ const formRef = ref()
 const form = ref({
   id: 0,
   name: '',
+  hide: false,
+  expand: true,
 })
 const rules = ref({
   name: [{ required: true, message: '请输入分组名称', trigger: 'change' }],
 })
 
-const allGroups = ref<AllGroup[]>([])
+const allGroups = ref<ExtRefGroup[]>([])
 
 // 获取所有扩展
 browser.management.getAll().then(async (res) => {
@@ -155,8 +162,10 @@ watch(dragExtRef, (val) => {
 function handleCommad(command: string, group: ExtGroup) {
   if (command === '编辑') {
     title.value = '编辑分组'
-    form.value.name = group.name
     form.value.id = group.id
+    form.value.name = group.name
+    form.value.hide = group.hide
+    form.value.expand = group.expand
     visible.value = true
   }
   else {
@@ -177,6 +186,8 @@ function handleCommad(command: string, group: ExtGroup) {
             id: 0,
             name: '默认分组',
             enabled: true,
+            hide: false,
+            expand: true,
             exts: delExtIds,
           })
         }
@@ -196,13 +207,18 @@ function handleOk() {
           id: Date.now(),
           name: form.value.name,
           enabled: true,
+          hide: form.value.hide,
+          expand: form.value.expand,
           exts: [],
         })
       }
       else {
         allGroups.value = allGroups.value.map((item) => {
-          if (item.id === form.value.id)
+          if (item.id === form.value.id) {
             item.name = form.value.name
+            item.hide = form.value.expand
+            item.expand = form.value.expand
+          }
           return item
         })
       }
