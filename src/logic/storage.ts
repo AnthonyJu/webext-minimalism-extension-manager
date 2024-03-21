@@ -15,8 +15,10 @@ export const extGroups = useStorageLocal<ExtGroup[]>('ext-groups', [], { listenT
 export function setDefaultGroup(exts: Ext[]) {
   // 过滤掉自身
   exts = exts.filter(item => item.name !== 'Extension Manager（极简）')
-  // 如果没有分组，创建默认分组
+
+  // Test
   // extGroups.value = []
+
   if (extGroups.value.length === 0) {
     extGroups.value = [
       {
@@ -41,7 +43,7 @@ export function setDefaultGroup(exts: Ext[]) {
       group.enabled = group.exts.some(ext => ext.enabled)
     })
   }
-  return
+
   // 计算所有分组的长度
   const extsNum = extGroups.value.reduce((prev, cur) => {
     return prev + cur.exts.length
