@@ -13,14 +13,23 @@
       <template v-if="extOrder === '3'">
         <template v-for="group in extGroups" :key="group.id">
           <div
-            v-if="group.exts.length > 0"
+            v-if="group.exts.length > 0 && !group.hide"
             class="border-gray border mx-6px py-5px rounded"
           >
-            <div class="px-10px pb-4px flex items-center justify-between text-14px border-b border-gray">
-              {{ group.name }}
+            <div
+              class="px-10px  cursor-pointer flex items-center justify-between text-14px  border-gray"
+              :class="group.expand ? 'pb-5px border-b' : '' "
+              @click="group.expand = !group.expand"
+            >
+              <span flex-center gap-5px :title="group.expand ? '收起' : '展开'">
+                <svg :class="group.expand ? '' : 'rotate--90'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32">
+                  <path fill="currentColor" d="M16 22L6 12l1.4-1.4l8.6 8.6l8.6-8.6L26 12z" />
+                </svg>
+                {{ group.name }}
+              </span>
               <GroupSwitch :group="group" />
             </div>
-            <div mt-8px>
+            <div v-if="group.expand">
               <Ext v-for="ext in group.exts" :key="ext.id" :ext-info="ext" />
             </div>
           </div>

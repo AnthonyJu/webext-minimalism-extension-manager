@@ -216,7 +216,7 @@ function handleOk() {
         allGroups.value = allGroups.value.map((item) => {
           if (item.id === form.value.id) {
             item.name = form.value.name
-            item.hide = form.value.expand
+            item.hide = form.value.hide
             item.expand = form.value.expand
           }
           return item
