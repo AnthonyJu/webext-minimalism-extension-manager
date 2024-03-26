@@ -38,7 +38,7 @@
           </template>
         </ElDropdown>
       </div>
-      <div ref="dragExtRef" class="group-ext-container  flex flex-1 flex-col gap-10px">
+      <div ref="dragExtRef" class="group-ext-container  flex flex-col gap-10px">
         <div v-for="ext in group.exts" :key="ext.id" class="group-ext-item flex cursor-move">
           <img :src="ext._icon" class="h-18px w-18px mr-10px">
           <div class="truncate">
@@ -284,6 +284,8 @@ function getIcon(icons?: Management.IconInfo[]) {
     }
     .group-ext-container {
       padding: 10px;
+      overflow: hidden;
+      height: 404px;
       .group-ext-item {
         padding: 10px;
         border-radius: 6px;
