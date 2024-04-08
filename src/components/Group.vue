@@ -284,8 +284,8 @@ function getIcon(icons?: Management.IconInfo[]) {
     }
     .group-ext-container {
       padding: 10px;
-      overflow: hidden;
-      height: 404px;
+      overflow: auto;
+      height: 412px;
       .group-ext-item {
         padding: 10px;
         border-radius: 6px;
